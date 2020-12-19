@@ -95,11 +95,7 @@
         		<f:footer>
 			        <OverflowToolbar >
                         <ToolbarSpacer/>
-                            <OverflowToolbarButton tooltip="Add" text="Add" icon="sap-icon://add"/>
-                            <OverflowToolbarButton tooltip="Save" text="Save" icon="sap-icon://save"/>
-                            <Button text="Cancel" type="Reject"/>
-                            <OverflowToolbarButton tooltip="Edit" text="Edit" icon="sap-icon://edit"/>
-                            <OverflowToolbarButton tooltip="Delete" text="Delete" icon="sap-icon://delete"/>
+                            <Button class="New" icon="sap-icon://add"  text="New" type="Transparent"/>
 			        </OverflowToolbar>
 		        </f:footer>
 
