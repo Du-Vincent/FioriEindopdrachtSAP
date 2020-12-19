@@ -1,6 +1,7 @@
 <mvc:View
 	controllerName="be.ap.product.controller.Detail"
 	xmlns="sap.m"
+    xmlns:f="sap.f"
 	xmlns:semantic="sap.f.semantic"
 	xmlns:mvc="sap.ui.core.mvc">
 
@@ -9,6 +10,7 @@
 		busy="{detailView>/busy}"
 		busyIndicatorDelay="{detailView>/delay}">
 		<semantic:titleHeading>
+        
 			<Title
 				text="{Name}"
 				level="H2"/>

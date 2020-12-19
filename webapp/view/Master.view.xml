@@ -1,21 +1,32 @@
 <mvc:View
 	controllerName="be.ap.product.controller.Master"
 	xmlns="sap.m"
+    xmlns:f="sap.f"
 	xmlns:semantic="sap.f.semantic"
 	xmlns:mvc="sap.ui.core.mvc">
 
-	<semantic:SemanticPage
-		id="masterPage"
-		preserveHeaderStateOnScroll="true"
-		toggleHeaderOnTitleClick="false">
-		<semantic:titleHeading>
-			<Title
-				id="masterPageTitle"
-				text="{masterView>/title}"
-				level="H2"/>
-		</semantic:titleHeading>
-		<semantic:content>
-			<!-- For client side filtering add this to the items attribute: parameters: {operationMode: 'Client'}}" -->
+    <f:DynamicPage 
+        id="masterPage" 		
+        preserveHeaderStateOnScroll="true"
+        toggleHeaderOnTitleClick="false"
+        showFooter="true">
+
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                <Toolbar>
+                    <Title 
+                           id="masterPageTitle"
+				           text="{masterView>/title}"
+				           level="H2"
+                           textAlign="Center"/>
+                           </Toolbar>
+                </f:heading>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:content>
+        <!-- For client side filtering add this to the items attribute: parameters: {operationMode: 'Client'}}" -->
 			<List
 				id="list"
 				width="auto"
@@ -53,47 +64,55 @@
 							id="searchField"
 							showRefreshButton="true"
 							tooltip="{i18n>masterSearchTooltip}"
-							search=".onSearch"
-							width="auto">
-							<layoutData>
-								<OverflowToolbarLayoutData
-									minWidth="150px"
-									maxWidth="240px"
-									shrinkable="true"
-									priority="NeverOverflow"/>
-							</layoutData>
+							liveChange=".onSearch"
+							width="100%">
 						</SearchField>
 						<ToolbarSpacer/>
-						<Button
-							id="sortButton"
-							press=".onOpenViewSettings"
-							icon="sap-icon://sort"
-							type="Transparent"/>
-						<Button
-							id="filterButton"
-							press=".onOpenViewSettings"
-							icon="sap-icon://filter"
-							type="Transparent"/>
-						<Button
-							id="groupButton"
-							press=".onOpenViewSettings"
-							icon="sap-icon://group-2"
-							type="Transparent"/>
 					</OverflowToolbar>
 				</headerToolbar>
 				<items>
 					<ObjectListItem
-						type="Navigation"
+						type="Active"
 						press=".onSelectionChange"
 						title="{Name}"
-						number="{
-							path: 'Price',
-							formatter: '.formatter.currencyValue'
-						}"
+                        number="{
+                            parts:[{path:'Price'},{path:'Currency'}],
+                            type: 'sap.ui.model.type.Currency',
+                            formatOptions: {minIntegerDigits: 3}
+                        }"
 						numberUnit="{Currency}">
+                        <firstStatus>
+                            <ObjectStatus
+                            text="{= ${Status} === 1 ? 'Validated' : ${Status} === 3 ? 'To be validated' : 'Obsolete'}"
+                            state="{= ${Status} === 1 ? 'Success' : ${Status} === 3 ? 'Warning' : 'Error'}"/>
+                        </firstStatus>
+                        <ObjectAttribute text="{Category}"/>
 					</ObjectListItem>
 				</items>
 			</List>
-		</semantic:content>
-	</semantic:SemanticPage>
+        </f:content>
+
+        		<f:footer>
+			        <OverflowToolbar >
+                        <ToolbarSpacer/>
+                            <OverflowToolbarButton tooltip="Add" text="Add" icon="sap-icon://add"/>
+                            <OverflowToolbarButton tooltip="Save" text="Save" icon="sap-icon://save"/>
+                            <Button text="Cancel" type="Reject"/>
+                            <OverflowToolbarButton tooltip="Edit" text="Edit" icon="sap-icon://edit"/>
+                            <OverflowToolbarButton tooltip="Delete" text="Delete" icon="sap-icon://delete"/>
+			        </OverflowToolbar>
+		        </f:footer>
+
+         </f:DynamicPage>
+
+            <!-- <semantic:footerCustomActions>
+            	<OverflowToolbarButton tooltip="Add" text="Add" icon="sap-icon://add"/>
+                <Button text="Save"/>
+                <Button text="Cancel" type="Reject"/>
+                <OverflowToolbarButton tooltip="Edit" text="Edit" icon="sap-icon://edit"/>
+                <OverflowToolbarButton tooltip="Delete" text="Delete" icon="sap-icon://delete"/>
+        </semantic:footerCustomActions>
+        
+	</semantic:SemanticPage> -->
+
 </mvc:View>
