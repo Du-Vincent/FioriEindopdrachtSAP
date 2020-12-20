@@ -2,9 +2,10 @@ sap.ui.define([
 	"./BaseController",
 	"sap/ui/model/json/JSONModel",
 	"../model/formatter",
-	"sap/m/library"
+    "sap/m/library",
 ], function (BaseController, JSONModel, formatter, mobileLibrary) {
-	"use strict";
+    "use strict";
+    
 
 	// shortcut for sap.m.URLHelper
 	var URLHelper = mobileLibrary.URLHelper;
@@ -78,8 +79,157 @@ sap.ui.define([
 				}
 				oViewModel.setProperty("/lineItemListTitle", sTitle);
 			}
-		},
+        },
+        
+        handleNewPress : function(oEvent) {
+            this.getView().byId("new").setEnabled(false);
+            this.getView().byId("save").setVisible(true);
+            this.getView().byId("cancel").setVisible(true);
+            
+            this.getView().byId("productID").setVisible(true);
 
+            this.getView().byId("category").setEnabled(true);
+            this.getView().byId("supplier").setEnabled(true);
+            this.getView().byId("name").setEnabled(true);
+            this.getView().byId("description").setEnabled(true);
+            this.getView().byId("price").setEnabled(true);
+            this.getView().byId("uom").setEnabled(true);
+            this.getView().byId("weight").setEnabled(true);
+            this.getView().byId("width").setEnabled(true);
+            this.getView().byId("depth").setEnabled(true);
+            this.getView().byId("height").setEnabled(true);
+            this.getView().byId("unit").setEnabled(true);
+            this.getView().byId("weightButton").setEnabled(true);
+        },
+
+        handleCancelPress : function(oEvent) {
+            sap.m.MessageToast.show("Cancelled");
+
+            this.getView().byId("save").setVisible(false);
+            this.getView().byId("cancel").setVisible(false);
+            this.getView().byId("productID").setVisible(false);
+
+            this.getView().byId("new").setEnabled(true);
+            this.getView().byId("category").setEnabled(false);
+            this.getView().byId("supplier").setEnabled(false);
+            this.getView().byId("name").setEnabled(false);
+            this.getView().byId("description").setEnabled(false);
+            this.getView().byId("price").setEnabled(false);
+            this.getView().byId("uom").setEnabled(false);
+            this.getView().byId("weight").setEnabled(false);
+            this.getView().byId("width").setEnabled(false);
+            this.getView().byId("depth").setEnabled(false);
+            this.getView().byId("height").setEnabled(false);
+            this.getView().byId("unit").setEnabled(false);
+            this.getView().byId("weightButton").setEnabled(false);
+        },
+
+            handleEditPress : function(oEvent) {
+            this.getView().byId("save").setVisible(true);
+            this.getView().byId("cancel").setVisible(true);
+
+            this.getView().byId("category").setEnabled(true);
+            this.getView().byId("supplier").setEnabled(true);
+            this.getView().byId("name").setEnabled(true);
+            this.getView().byId("description").setEnabled(true);
+            this.getView().byId("price").setEnabled(true);
+            this.getView().byId("uom").setEnabled(true);
+            this.getView().byId("weight").setEnabled(true);
+            this.getView().byId("width").setEnabled(true);
+            this.getView().byId("depth").setEnabled(true);
+            this.getView().byId("height").setEnabled(true);
+            this.getView().byId("unit").setEnabled(true);
+            this.getView().byId("weightButton").setEnabled(true);
+        },
+        
+        handleSavePress : function(oEvent) {
+
+             var category = this.getView().byId("category").getValue(),
+             productID = this.getView().byId("productID").getValue(),
+             supplier = this.getView().byId("supplier").getValue(),
+             name = this.getView().byId("name").getValue(),
+             description = this.getView().byId("description").getValue(),
+             price = this.getView().byId("price").getValue(),
+             uom = this.getView().byId("uom").getValue(),
+             weight = this.getView().byId("weight").getValue(),
+             width = this.getView().byId("width").getValue(),
+             depth = this.getView().byId("depth").getValue(),
+             height = this.getView().byId("height").getValue(),
+             unit = this.getView().byId("unit").getValue();
+
+            if (this.getView().byId("productID").getProperty("visible")) {
+                 var productCreate = {
+                                     SupplierId: parseInt(supplier),
+                                     Category : category,
+                                     Weight: weight,
+                                     WeightUnit: 'KG',
+                                     Description: description,
+                                     Name: name,
+                                     Uom: 'PC',
+                                     Price: price,
+                                     Currency: 'EUR',
+                                     Width: width,
+                                     Depth: depth,
+                                     Height: height,
+                                     DimUnit: 'CM',
+                                     };
+
+                // var serviceURI = "https://r36z.ucc.ovgu.de/sap/opu/odata/SAP/ZSD_020_PRODUCT_SRV/";
+                   var oModel = this.getView().getModel();
+                   oModel.create("/ProductSet", productCreate, { method: "POST",
+                                                                success: function(data) {
+                                                                sap.m.MessageToast.show("Product Saved.");
+                                                                }, error: function(e) {
+                                                                sap.m.MessageToast.show("Error, product not saved.");}});
+            } 
+            else {
+                var productUpdate = {
+                                     ProductId: productID,
+                                     SupplierId: parseInt(supplier),
+                                     Category : category,
+                                     Weight: weight,
+                                     WeightUnit: 'KG',
+                                     Description: description,
+                                     Name: name,
+                                     Uom: 'PC',
+                                     Price: price,
+                                     Currency: 'EUR',
+                                     Width: width,
+                                     Depth: depth,
+                                     Height: height,
+                                     DimUnit: 'CM',
+                                     };
+                    var oModel = this.getView().getModel();
+                //oModel.update("/ProductSet('" + productID + "')", productEntry);
+                    oModel.update("/ProductSet('" + productID + "')", productUpdate, { method: "PUT",
+                                                                success: function(data) {
+                                                                sap.m.MessageToast.show("Product Saved.");
+                                                                }, error: function(e) {
+                                                                sap.m.MessageToast.show("Error, product not saved.");}});
+
+            }
+
+            // sap.m.MessageToast.show("Product Saved");
+
+            this.getView().byId("save").setVisible(false);
+            this.getView().byId("cancel").setVisible(false);
+            this.getView().byId("productID").setVisible(false);
+
+            this.getView().byId("new").setEnabled(true);
+            this.getView().byId("category").setEnabled(false);
+            this.getView().byId("supplier").setEnabled(false);
+            this.getView().byId("name").setEnabled(false);
+            this.getView().byId("description").setEnabled(false);
+            this.getView().byId("price").setEnabled(false);
+            this.getView().byId("uom").setEnabled(false);
+            this.getView().byId("weight").setEnabled(false);
+            this.getView().byId("width").setEnabled(false);
+            this.getView().byId("depth").setEnabled(false);
+            this.getView().byId("height").setEnabled(false);
+            this.getView().byId("unit").setEnabled(false);
+
+            this.getView().byId("weightButton").setEnabled(false);
+        },
 		/* =========================================================== */
 		/* begin: internal methods                                     */
 		/* =========================================================== */

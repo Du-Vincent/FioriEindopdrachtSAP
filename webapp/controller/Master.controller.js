@@ -73,7 +73,7 @@ sap.ui.define([
 			});
 
 			this.getRouter().getRoute("master").attachPatternMatched(this._onMasterMatched, this);
-			this.getRouter().attachBypassed(this.onBypassed, this);
+            this.getRouter().attachBypassed(this.onBypassed, this);
 		},
 
 		/* =========================================================== */
@@ -159,7 +159,7 @@ sap.ui.define([
 			} else {
 				this.byId("viewSettingsDialog").open(sDialogTab);
 			}
-		},
+        },
 
 		/**
 		 * Event handler called when ViewSettingsDialog has been confirmed, i.e.
@@ -269,7 +269,12 @@ sap.ui.define([
 		onNavBack : function() {
 			// eslint-disable-next-line sap-no-history-manipulation
 			history.go(-1);
-		},
+        },
+
+        handleEditPress : function(oEvent) {
+
+            sap.m.MessageToast.show("Edit man");
+        },
 
 		/* =========================================================== */
 		/* begin: internal methods                                     */
@@ -306,8 +311,7 @@ sap.ui.define([
 			this.getRouter().navTo("object", {
 				objectId : oItem.getBindingContext().getProperty("ProductId")
 			}, bReplace);
-		},
-
+        },
 		/**
 		 * Sets the item count on the master list header
 		 * @param {integer} iTotalItems the total number of items in the list

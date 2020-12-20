@@ -95,7 +95,7 @@
         		<f:footer>
 			        <OverflowToolbar >
                         <ToolbarSpacer/>
-                            <Button class="New" icon="sap-icon://add"  text="New" type="Transparent"/>
+                            <Button class="New" icon="sap-icon://add"  text="New" type="Transparent" press=""/>
 			        </OverflowToolbar>
 		        </f:footer>
 

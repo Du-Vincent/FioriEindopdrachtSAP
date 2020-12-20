@@ -32,10 +32,14 @@ controllerName="be.ap.product.controller.Detail">
                             </m:VBox>
                             <m:VBox justifyContent="Center" class="sapUiSmallMarginEnd">
                             <m:Title text="{Name}" wrapping="true" class="sapUiSmallMarginEnd" titleStyle="H3"/>
-                            <m:Title text="{                                 parts:[{path:'Price'},{path:'Currency'}],                                 type: 'sap.ui.model.type.Currency',                                 formatOptions: {showMeasure: false}                                 }" wrapping="true" class="sapUiSmallMarginEnd" titleStyle="H4"/>
+                            <m:Title text="{parts: [{path:'Price'},{path:'Currency'}],
+                                            type: 'sap.ui.model.type.Currency',
+                                            formatOptions: {showMeasure: false}}"
+                                     wrapping="true" class="sapUiSmallMarginEnd" titleStyle="H4"/>
                             <m:ObjectAttribute text="{Currency}"/>
                             <m:ObjectNumber number=""/>
-                            <m:ObjectStatus text="{= ${Status} === 1 ? 'Validated' : ${Status} === 3 ? 'To be validated' : 'Obsolete'}" state="{= ${Status} === 1 ? 'Success' : ${Status} === 3 ? 'Warning' : 'Error'}"/>
+                            <m:ObjectStatus text="{= ${Status} === 1 ? 'Validated' : ${Status} === 3 ? 'To be validated' : 'Obsolete'}" 
+                                            state="{= ${Status} === 1 ? 'Success' : ${Status} === 3 ? 'Warning' : 'Error'}"/>
                             </m:VBox>
                     </m:HBox>
 					</m:FlexBox>
@@ -48,8 +52,10 @@ controllerName="be.ap.product.controller.Detail">
 						<blocks>
                         	<m:VBox class="sapUiSmallMargin">
 
-							<form:SimpleForm labelSpanXL="4" labelSpanL="3" labelSpanM="4" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="4" emptySpanM="0" emptySpanS="0" columnsXL="2" columnsL="1" columnsM="1" singleContainerFullSize="false"> 
+							<form:SimpleForm id="form" labelSpanXL="4" labelSpanL="3" labelSpanM="4" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="4" emptySpanM="0" emptySpanS="0" columnsXL="2" columnsL="1" columnsM="1" singleContainerFullSize="false"> 
 								<form:content>
+                                    <m:Label text="Product ID" visible="true"/>
+                                    <m:Input id="productID" value="{ProductId}" width="50%" class="sapUiSmallMarginBottom" visible="false"/>
 									<m:Label text="Product Category"/>
                                         <!-- <m:Page>
                                             <m:content>
@@ -57,21 +63,21 @@ controllerName="be.ap.product.controller.Detail">
                                                 <core:Item text="{Name}"/></m:ComboBox>
                                            </m:content>
                                         </m:Page> -->
-                                    <m:Input value="{Category}" width="50%" class="sapUiSmallMarginBottom" editable="true"/>
+                                    <m:Input id="category" value="{Category}" width="50%" class="sapUiSmallMarginBottom" enabled="false"/>
 									<m:Label text="Supplier ID"/>
-									 <m:Input value="{Supplier}" width="50%" class="sapUiSmallMarginBottom" editable="true"/>
+									 <m:Input id="supplier" value="{SupplierId}" width="50%" class="sapUiSmallMarginBottom" enabled="false"/>
 									<m:Label text="Product Name"/>
-                                    <m:Input value="{Name}" width="100%" fieldWidth="200px" class="sapUiSmallMarginBottom" editable="true"/>
+                                    <m:Input id="name" value="{Name}" width="100%" fieldWidth="200px" class="sapUiSmallMarginBottom" enabled="false"/>
                                     <m:Label text="Product Description"/>
-									<m:TextArea value="{Description}" growing="false" height="70px" width="100%"/>
+									<m:TextArea id="description" value="{Description}" growing="false" height="70px" width="100%" enabled="false"/>
                                     <m:Label text="Price"/>
-                                    <m:Input value="{Price}" description="{Currency}" fieldWidth="50%" class="sapUiSmallMarginBottom" editable="true"/>
+                                    <m:Input id="price" value="{Price}" description="{Currency}" fieldWidth="50%" class="sapUiSmallMarginBottom" enabled="false"/>
                                     <m:Label text="Unit Of Measure"/>
-									<m:Input value="{Unit}" width="50%" class="sapUiSmallMarginBottom" editable="true"/>
+									<m:Input id="uom" value="{Uom}" width="50%" class="sapUiSmallMarginBottom" enabled="false"/>
                                     <m:Label text="Weight"/>
                                     <m:HBox>
-                                    <m:Input value="{Weight}" width="100%" class="sapUiSmallMarginBottom" editable="true"/>
-                                    <m:SegmentedButton selectionChange="onSelectionChange">
+                                    <m:Input id="weight" value="{Weight}" width="100%" class="sapUiSmallMarginBottom" enabled="false"/>
+                                    <m:SegmentedButton id="weightButton" selectionChange="onSelectionChange" enabled="false">
                                         <m:items>
                                             <m:SegmentedButtonItem text="Kilograms"/>
                                             <m:SegmentedButtonItem text="Grams"/>
@@ -85,13 +91,13 @@ controllerName="be.ap.product.controller.Detail">
 
                                         <form:content>
                                             <m:Label text="Width"/>
-                                            <m:Input value="{Width}" width="20%" class="sapUiSmallMarginBottom" editable="true"/>
+                                            <m:Input id="width" value="{Width}" width="20%" class="sapUiSmallMarginBottom" enabled="false"/>
                                             <m:Label text="Depth"/>
-                                            <m:Input value="{Depth}" width="20%" class="sapUiSmallMarginBottom" editable="true"/>
+                                            <m:Input id="depth" value="{Depth}" width="20%" class="sapUiSmallMarginBottom" enabled="false"/>
                                             <m:Label text="Height"/>
-                                            <m:Input value="{Height}" width="20%" class="sapUiSmallMarginBottom" editable="true"/>
+                                            <m:Input id="height" value="{Height}" width="20%" class="sapUiSmallMarginBottom" enabled="false"/>
                                             <m:Label text="Unit"/>
-                                            <m:Input value="{Unit}" width="15%" class="sapUiSmallMarginBottom" editable="true"/>
+                                            <m:Input id="unit" value="{DimUnit}" width="15%" class="sapUiSmallMarginBottom" enabled="false"/>
                                         </form:content>
                             </form:SimpleForm>
                             	</m:VBox>
@@ -103,10 +109,11 @@ controllerName="be.ap.product.controller.Detail">
                 		<footer>
                             <m:OverflowToolbar>
                                 <m:ToolbarSpacer/>
-                                <m:Button text="Save" type="Emphasized"/>
-                                <m:Button text="Cancel" type="Default"/>
-                                <m:Button class="Edit" icon="sap-icon://edit" text="Edit"/>
-                                <m:Button class="Delete" icon="sap-icon://delete" text="Delete" type="Reject"/>                                
+                                <m:Button id="new" class="New" icon="sap-icon://add"  text="New" type="Transparent" press="handleNewPress"/>
+                                <m:Button id="save" text="Save" type="Emphasized" press="handleSavePress" visible="false"/>
+                                <m:Button id="cancel" text="Cancel" type="Default" press="handleCancelPress" visible="false"/>
+                                <m:Button id="edit" class="Edit" icon="sap-icon://edit" text="Edit"  press="handleEditPress"/>
+                                <m:Button id="delete" class="Delete" icon="sap-icon://delete" text="Delete" type="Reject" press="handleDeletePress"/>                                
                             </m:OverflowToolbar>
 		                </footer>
                         
