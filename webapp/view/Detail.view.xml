@@ -110,7 +110,8 @@ controllerName="be.ap.product.controller.Detail">
                             <m:OverflowToolbar>
                                 <m:ToolbarSpacer/>
                                 <m:Button id="new" class="New" icon="sap-icon://add"  text="New" type="Transparent" press="handleNewPress"/>
-                                <m:Button id="save" text="Save" type="Emphasized" press="handleSavePress" visible="false"/>
+                                <m:Button id="saveNew" text="Save" type="Emphasized" press="handleSavePressNew" visible="false"/>
+                                <m:Button id="saveEdit" text="Save" type="Emphasized" press="handleSavePressEdit" visible="false"/>
                                 <m:Button id="cancel" text="Cancel" type="Default" press="handleCancelPress" visible="false"/>
                                 <m:Button id="edit" class="Edit" icon="sap-icon://edit" text="Edit"  press="handleEditPress"/>
                                 <m:Button id="delete" class="Delete" icon="sap-icon://delete" text="Delete" type="Reject" press="handleDeletePress"/>                                

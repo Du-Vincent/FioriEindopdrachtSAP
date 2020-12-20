@@ -72,6 +72,7 @@
 				</headerToolbar>
 				<items>
 					<ObjectListItem
+                        id="listA"
 						type="Active"
 						press=".onSelectionChange"
 						title="{Name}"
@@ -95,7 +96,7 @@
         		<f:footer>
 			        <OverflowToolbar >
                         <ToolbarSpacer/>
-                            <Button class="New" icon="sap-icon://add"  text="New" type="Transparent" press=""/>
+                            <Button class="New" icon="sap-icon://add"  text="New" type="Transparent" press="handleNewPresss"/>
 			        </OverflowToolbar>
 		        </f:footer>
 

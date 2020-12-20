@@ -271,9 +271,17 @@ sap.ui.define([
 			history.go(-1);
         },
 
-        handleEditPress : function(oEvent) {
-
-            sap.m.MessageToast.show("Edit man");
+        handleNewPress : function(oEvent) {
+        //    location.reload(); // eslint-disable-line sap-no-location-reload
+        //    const oModel = this.getView().getModel("masterView");
+        //         oModel.updateBindings();
+        this.browser.refresh();
+        this.location.refresh();
+        location.reload();
+        this.getView().getModel().refresh();
+        sap.ui.getCore().byId("masterView").getModel().refresh(true);
+        sap.ui.getCore().byId("list").getModel().refresh(true);
+        sap.ui.getCore().byId("listA").getModel().refresh(true);
         },
 
 		/* =========================================================== */

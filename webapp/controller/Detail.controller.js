@@ -80,69 +80,64 @@ sap.ui.define([
 				oViewModel.setProperty("/lineItemListTitle", sTitle);
 			}
         },
+                
+        updateInputFields : function(visible) {
+            this.getView().byId("category").setEnabled(visible);
+            this.getView().byId("supplier").setEnabled(visible);
+            this.getView().byId("name").setEnabled(visible);
+            this.getView().byId("description").setEnabled(visible);
+            this.getView().byId("price").setEnabled(visible);
+            this.getView().byId("uom").setEnabled(visible);
+            this.getView().byId("weight").setEnabled(visible);
+            this.getView().byId("width").setEnabled(visible);
+            this.getView().byId("depth").setEnabled(visible);
+            this.getView().byId("height").setEnabled(visible);
+            this.getView().byId("unit").setEnabled(visible);
+            this.getView().byId("weightButton").setEnabled(visible);
+        },
         
         handleNewPress : function(oEvent) {
             this.getView().byId("new").setEnabled(false);
-            this.getView().byId("save").setVisible(true);
+            this.getView().byId("saveNew").setVisible(true);
+            this.getView().byId("saveEdit").setVisible(false);
             this.getView().byId("cancel").setVisible(true);
-            
-            this.getView().byId("productID").setVisible(true);
 
-            this.getView().byId("category").setEnabled(true);
-            this.getView().byId("supplier").setEnabled(true);
-            this.getView().byId("name").setEnabled(true);
-            this.getView().byId("description").setEnabled(true);
-            this.getView().byId("price").setEnabled(true);
-            this.getView().byId("uom").setEnabled(true);
-            this.getView().byId("weight").setEnabled(true);
-            this.getView().byId("width").setEnabled(true);
-            this.getView().byId("depth").setEnabled(true);
-            this.getView().byId("height").setEnabled(true);
-            this.getView().byId("unit").setEnabled(true);
-            this.getView().byId("weightButton").setEnabled(true);
+            this.updateInputFields(true);
+
+            // this.getView().byId("category").setValue("");
+            // this.getView().byId("supplier").setValue("");
+            // this.getView().byId("name").setValue("");
+            // this.getView().byId("description").setValue("");
+            // this.getView().byId("price").setValue("");
+            // this.getView().byId("uom").setValue("");
+            // this.getView().byId("weight").setValue("");
+            // this.getView().byId("width").setValue("");
+            // this.getView().byId("depth").setValue("");
+            // this.getView().byId("height").setValue("");
+            // this.getView().byId("unit").setValue("");
+            // this.getView().byId("weightButton").setValue("");
         },
 
         handleCancelPress : function(oEvent) {
             sap.m.MessageToast.show("Cancelled");
 
-            this.getView().byId("save").setVisible(false);
+            this.getView().byId("saveNew").setVisible(false);
+            this.getView().byId("saveEdit").setVisible(false);
             this.getView().byId("cancel").setVisible(false);
-            this.getView().byId("productID").setVisible(false);
-
             this.getView().byId("new").setEnabled(true);
-            this.getView().byId("category").setEnabled(false);
-            this.getView().byId("supplier").setEnabled(false);
-            this.getView().byId("name").setEnabled(false);
-            this.getView().byId("description").setEnabled(false);
-            this.getView().byId("price").setEnabled(false);
-            this.getView().byId("uom").setEnabled(false);
-            this.getView().byId("weight").setEnabled(false);
-            this.getView().byId("width").setEnabled(false);
-            this.getView().byId("depth").setEnabled(false);
-            this.getView().byId("height").setEnabled(false);
-            this.getView().byId("unit").setEnabled(false);
-            this.getView().byId("weightButton").setEnabled(false);
+
+            this.updateInputFields(false);
         },
 
         handleEditPress : function(oEvent) {
-            this.getView().byId("save").setVisible(true);
+            this.getView().byId("saveEdit").setVisible(true);
+            this.getView().byId("saveNew").setVisible(false);
             this.getView().byId("cancel").setVisible(true);
 
-            this.getView().byId("category").setEnabled(true);
-            this.getView().byId("supplier").setEnabled(true);
-            this.getView().byId("name").setEnabled(true);
-            this.getView().byId("description").setEnabled(true);
-            this.getView().byId("price").setEnabled(true);
-            this.getView().byId("uom").setEnabled(true);
-            this.getView().byId("weight").setEnabled(true);
-            this.getView().byId("width").setEnabled(true);
-            this.getView().byId("depth").setEnabled(true);
-            this.getView().byId("height").setEnabled(true);
-            this.getView().byId("unit").setEnabled(true);
-            this.getView().byId("weightButton").setEnabled(true);
+            this.updateInputFields(true);
         },
-        
-        handleSavePress : function(oEvent) {
+            
+        handleSavePressEdit : function(oEvent) {
 
              var category = this.getView().byId("category").getValue(),
              productID = this.getView().byId("productID").getValue(),
@@ -157,32 +152,6 @@ sap.ui.define([
              height = this.getView().byId("height").getValue(),
              unit = this.getView().byId("unit").getValue();
 
-            if (this.getView().byId("productID").getProperty("visible")) {
-                 var productCreate = {
-                                     SupplierId: parseInt(supplier),
-                                     Category : category,
-                                     Weight: weight,
-                                     WeightUnit: 'KG',
-                                     Description: description,
-                                     Name: name,
-                                     Uom: 'PC',
-                                     Price: price,
-                                     Currency: 'EUR',
-                                     Width: width,
-                                     Depth: depth,
-                                     Height: height,
-                                     DimUnit: 'CM',
-                                     };
-
-                // var serviceURI = "https://r36z.ucc.ovgu.de/sap/opu/odata/SAP/ZSD_020_PRODUCT_SRV/";
-                   var oModel = this.getView().getModel();
-                   oModel.create("/ProductSet", productCreate, { method: "POST",
-                                                                success: function(data) {
-                                                                sap.m.MessageToast.show("Product Saved.");
-                                                                }, error: function(e) {
-                                                                sap.m.MessageToast.show("Error, product not saved.");}});
-            } 
-            else {
                 var productUpdate = {
                                      ProductId: productID,
                                      SupplierId: parseInt(supplier),
@@ -200,36 +169,73 @@ sap.ui.define([
                                      DimUnit: 'CM',
                                      };
                     var oModel = this.getView().getModel();
-                //oModel.update("/ProductSet('" + productID + "')", productEntry);
                     oModel.update("/ProductSet('" + productID + "')", productUpdate, { method: "PUT",
+                                                                success: function(data) {
+                                                                sap.m.MessageToast.show("Product Updated.");
+                                                                }, error: function(e) {
+                                                                sap.m.MessageToast.show("Error, product not updated.");}});
+
+            // sap.m.MessageToast.show("Product Saved");
+
+            this.getView().byId("saveEdit").setVisible(false);
+            this.getView().byId("saveNew").setVisible(false);
+            this.getView().byId("cancel").setVisible(false);
+            this.getView().byId("new").setEnabled(true);
+
+            this.updateInputFields(false);
+        },
+
+
+        
+        handleSavePressNew : function(oEvent) {
+
+             var category = this.getView().byId("category").getValue(),
+             productID = this.getView().byId("productID").getValue(),
+             supplier = this.getView().byId("supplier").getValue(),
+             name = this.getView().byId("name").getValue(),
+             description = this.getView().byId("description").getValue(),
+             price = this.getView().byId("price").getValue(),
+             uom = this.getView().byId("uom").getValue(),
+             weight = this.getView().byId("weight").getValue(),
+             width = this.getView().byId("width").getValue(),
+             depth = this.getView().byId("depth").getValue(),
+             height = this.getView().byId("height").getValue(),
+             unit = this.getView().byId("unit").getValue();
+
+
+                 var productCreate = {
+                                     SupplierId: parseInt(supplier),
+                                     Category : category,
+                                     Weight: weight,
+                                     WeightUnit: 'KG',
+                                     Description: description,
+                                     Name: name,
+                                     Uom: 'PC',
+                                     Price: price,
+                                     Currency: 'EUR',
+                                     Width: width,
+                                     Depth: depth,
+                                     Height: height,
+                                     DimUnit: 'CM',
+                                     };
+
+                   var oModel = this.getView().getModel();
+                   oModel.create("/ProductSet", productCreate, { method: "POST",
                                                                 success: function(data) {
                                                                 sap.m.MessageToast.show("Product Saved.");
                                                                 }, error: function(e) {
                                                                 sap.m.MessageToast.show("Error, product not saved.");}});
 
-            }
-
             // sap.m.MessageToast.show("Product Saved");
 
             this.getView().byId("save").setVisible(false);
             this.getView().byId("cancel").setVisible(false);
-            this.getView().byId("productID").setVisible(false);
-
             this.getView().byId("new").setEnabled(true);
-            this.getView().byId("category").setEnabled(false);
-            this.getView().byId("supplier").setEnabled(false);
-            this.getView().byId("name").setEnabled(false);
-            this.getView().byId("description").setEnabled(false);
-            this.getView().byId("price").setEnabled(false);
-            this.getView().byId("uom").setEnabled(false);
-            this.getView().byId("weight").setEnabled(false);
-            this.getView().byId("width").setEnabled(false);
-            this.getView().byId("depth").setEnabled(false);
-            this.getView().byId("height").setEnabled(false);
-            this.getView().byId("unit").setEnabled(false);
 
-            this.getView().byId("weightButton").setEnabled(false);
+            this.updateInputFields(false);
         },
+
+
 
         handleDeletePress : function() {
 
