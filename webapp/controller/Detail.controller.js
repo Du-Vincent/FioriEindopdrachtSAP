@@ -124,7 +124,7 @@ sap.ui.define([
             this.getView().byId("weightButton").setEnabled(false);
         },
 
-            handleEditPress : function(oEvent) {
+        handleEditPress : function(oEvent) {
             this.getView().byId("save").setVisible(true);
             this.getView().byId("cancel").setVisible(true);
 
@@ -230,6 +230,22 @@ sap.ui.define([
 
             this.getView().byId("weightButton").setEnabled(false);
         },
+
+        handleDeletePress : function() {
+
+            var oModel = this.getView().getModel();
+            var productID = this.getView().byId("productID").getValue();
+
+            oModel.callFunction("/SET_STATUS_PRODUCT", { method: "POST",
+                                                        urlParameters:{"ProductID" : productID, "Status" : 2},
+                                                        success: function(data) {
+                                                        sap.m.MessageToast.show("Product Deleted.");
+                                                        }, error: function(e) {
+                                                        sap.m.MessageToast.show("Error, product not deleted.");}});
+
+
+        },
+
 		/* =========================================================== */
 		/* begin: internal methods                                     */
 		/* =========================================================== */
