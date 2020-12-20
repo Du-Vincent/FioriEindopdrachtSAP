@@ -1,0 +1,30 @@
+{
+"categories": [{
+    "Key": "LP",
+    "Name": "Laptops"
+},
+{
+    "Key": "AC",
+    "Name": "Accessories"
+},
+{
+    "Key": "FS",
+    "Name": "Flat Screen Monitors"
+},
+{
+    "Key": "KB",
+    "Name": "Keyboards"
+},
+{
+    "Key": "MC",
+    "Name": "Mice"
+},
+{
+    "Key": "PI",
+    "Name": "Printers"
+},
+{
+    "Key": "MP",
+    "Name": "Multifunction Printers"
+}]
+}

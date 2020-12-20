@@ -25,13 +25,18 @@ sap.ui.define([
 				busy : false,
 				delay : 0,
 				lineItemListTitle : this.getResourceBundle().getText("detailLineItemTableHeading")
-			});
+            });
+
+            // var oModel = new sap.ui.model.json.JSONModel("../model/categories.json");
+            // var comboBox = this.getView().byId("selectCategory");
+            // comboBox.setModel(oModel);
 
 			this.getRouter().getRoute("object").attachPatternMatched(this._onObjectMatched, this);
 
 			this.setModel(oViewModel, "detailView");
 
-			this.getOwnerComponent().getModel().metadataLoaded().then(this._onMetadataLoaded.bind(this));
+            this.getOwnerComponent().getModel().metadataLoaded().then(this._onMetadataLoaded.bind(this));
+            
 		},
 
 		/* =========================================================== */

@@ -64,7 +64,7 @@
 							id="searchField"
 							showRefreshButton="true"
 							tooltip="{i18n>masterSearchTooltip}"
-							liveChange=".onSearch"
+							liveChange="onSearch"
 							width="100%">
 						</SearchField>
 						<ToolbarSpacer/>
@@ -78,7 +78,7 @@
                         number="{
                             parts:[{path:'Price'},{path:'Currency'}],
                             type: 'sap.ui.model.type.Currency',
-                            formatOptions: {minIntegerDigits: 3}
+                            formatOptions: {showMeasure: false}
                         }"
 						numberUnit="{Currency}">
                         <firstStatus>
@@ -100,15 +100,4 @@
 		        </f:footer>
 
          </f:DynamicPage>
-
-            <!-- <semantic:footerCustomActions>
-            	<OverflowToolbarButton tooltip="Add" text="Add" icon="sap-icon://add"/>
-                <Button text="Save"/>
-                <Button text="Cancel" type="Reject"/>
-                <OverflowToolbarButton tooltip="Edit" text="Edit" icon="sap-icon://edit"/>
-                <OverflowToolbarButton tooltip="Delete" text="Delete" icon="sap-icon://delete"/>
-        </semantic:footerCustomActions>
-        
-	</semantic:SemanticPage> -->
-
 </mvc:View>

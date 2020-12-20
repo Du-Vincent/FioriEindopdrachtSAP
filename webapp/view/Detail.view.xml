@@ -1,21 +1,22 @@
-<mvc:View
-	controllerName="be.ap.product.controller.Detail"
-    xmlns="sap.uxap"
-	xmlns:m="sap.m"
-    xmlns:f="sap.f"
-	xmlns:semantic="sap.f.semantic"
-	xmlns:mvc="sap.ui.core.mvc"
-    xmlns:form="sap.ui.layout.form">
+<mvc:View 
+xmlns="sap.uxap" 
+xmlns:m="sap.m" 
+xmlns:f="sap.f" 
+xmlns:core="sap.ui.core" 
+xmlns:semantic="sap.f.semantic" 
+xmlns:mvc="sap.ui.core.mvc" 
+xmlns:form="sap.ui.layout.form" 
+controllerName="be.ap.product.controller.Detail">
 
-	<ObjectPageLayout id="detailPage"
-					 showTitleInHeaderContent="true"
-					alwaysShowContentHeader="false"
-					preserveHeaderStateOnScroll="false"
-					headerContentPinnable="false"
-					isChildPage="true"
-					upperCaseAnchorBar="false"
-                    showFooter="true">
-                    
+	<ObjectPageLayout 
+        id="detailPage" 
+        showTitleInHeaderContent="true" 
+        alwaysShowContentHeader="false" 
+        preserveHeaderStateOnScroll="false" 
+        headerContentPinnable="false" 
+        isChildPage="true" 
+        upperCaseAnchorBar="false" 
+        showFooter="true">  
 				<headerTitle>
                     <ObjectPageHeader>
                         <m:Title text="Product details" wrapping="true" class="sapUiSmallMarginEnd" titleStyle="H3"/>
@@ -27,21 +28,16 @@
                     <m:HBox>
                     		<m:VBox justifyContent="Center" class="sapUiSmallMarginEnd">
 							    <m:Text text="{ProductId}"/>
-					            <f:Avatar
-                                    src="{i18n>url}"
-                                    displaySize="XL"
-                                    displayShape="Square"
-                                    press="onPress"
-                                    fallbackIcon="sap-icon://product"/>
+					            <f:Avatar src="{i18n>url}" displaySize="XL" displayShape="Square" press="onPress" fallbackIcon="sap-icon://product"/>
                             </m:VBox>
                             <m:VBox justifyContent="Center" class="sapUiSmallMarginEnd">
                             <m:Title text="{Name}" wrapping="true" class="sapUiSmallMarginEnd" titleStyle="H3"/>
-                            <m:Title text="{Price}" wrapping="true" class="sapUiSmallMarginEnd" titleStyle="H4"/>
-                            <m:ObjectNumber number="{Currency}" emphasized="false"/>
-                            <m:ObjectNumber number="{= ${Status} === 1 ? 'Validated' : ${Status} === 3 ? 'To be validated' : 'Obsolete'}" emphasized="false"/>
+                            <m:Title text="{                                 parts:[{path:'Price'},{path:'Currency'}],                                 type: 'sap.ui.model.type.Currency',                                 formatOptions: {showMeasure: false}                                 }" wrapping="true" class="sapUiSmallMarginEnd" titleStyle="H4"/>
+                            <m:ObjectAttribute text="{Currency}"/>
+                            <m:ObjectNumber number=""/>
+                            <m:ObjectStatus text="{= ${Status} === 1 ? 'Validated' : ${Status} === 3 ? 'To be validated' : 'Obsolete'}" state="{= ${Status} === 1 ? 'Success' : ${Status} === 3 ? 'Warning' : 'Error'}"/>
                             </m:VBox>
                     </m:HBox>
-                    
 					</m:FlexBox>
 				</headerContent>
 
@@ -50,41 +46,69 @@
 				<subSections>
 					<ObjectPageSubSection>
 						<blocks>
-							<form:SimpleForm
-								maxContainerCols="2"
-								editable="false"
-								layout="ResponsiveGridLayout"
-								labelSpanL="12"
-								labelSpanM="12"
-								emptySpanL="0"
-								emptySpanM="0"
-								columnsL="1"
-								columnsM="1">
+                        	<m:VBox class="sapUiSmallMargin">
+
+							<form:SimpleForm labelSpanXL="4" labelSpanL="3" labelSpanM="4" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="4" emptySpanM="0" emptySpanS="0" columnsXL="2" columnsL="1" columnsM="1" singleContainerFullSize="false"> 
 								<form:content>
-									<m:Label text="Product ID"/>
-									<m:Text text="{products>ProductId}"/>
-									<m:Label text="Description"/>
-									<m:Text text="{products>Description}"/>
-									<m:Label text="Supplier"/>
-									<m:Text text="{products>SupplierName}"/>
+									<m:Label text="Product Category"/>
+                                        <!-- <m:Page>
+                                            <m:content>
+                                                <m:ComboBox id="selectCategory" items="{path: '/categories'}">
+                                                <core:Item text="{Name}"/></m:ComboBox>
+                                           </m:content>
+                                        </m:Page> -->
+                                    <m:Input value="{Category}" width="50%" class="sapUiSmallMarginBottom" editable="true"/>
+									<m:Label text="Supplier ID"/>
+									 <m:Input value="{Supplier}" width="50%" class="sapUiSmallMarginBottom" editable="true"/>
+									<m:Label text="Product Name"/>
+                                    <m:Input value="{Name}" width="100%" fieldWidth="200px" class="sapUiSmallMarginBottom" editable="true"/>
+                                    <m:Label text="Product Description"/>
+									<m:TextArea value="{Description}" growing="false" height="70px" width="100%"/>
+                                    <m:Label text="Price"/>
+                                    <m:Input value="{Price}" description="{Currency}" fieldWidth="50%" class="sapUiSmallMarginBottom" editable="true"/>
+                                    <m:Label text="Unit Of Measure"/>
+									<m:Input value="{Unit}" width="50%" class="sapUiSmallMarginBottom" editable="true"/>
+                                    <m:Label text="Weight"/>
+                                    <m:HBox>
+                                    <m:Input value="{Weight}" width="100%" class="sapUiSmallMarginBottom" editable="true"/>
+                                    <m:SegmentedButton selectionChange="onSelectionChange">
+                                        <m:items>
+                                            <m:SegmentedButtonItem text="Kilograms"/>
+                                            <m:SegmentedButtonItem text="Grams"/>
+                                        </m:items>
+                                    </m:SegmentedButton>
+                                    </m:HBox>
 								</form:content>
 							</form:SimpleForm>
+
+                            <form:SimpleForm labelSpanXL="4" labelSpanL="3" labelSpanM="4" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="4" emptySpanM="0" emptySpanS="0" columnsXL="2" columnsL="1" columnsM="1" singleContainerFullSize="false" title="Dimensions">
+
+                                        <form:content>
+                                            <m:Label text="Width"/>
+                                            <m:Input value="{Width}" width="20%" class="sapUiSmallMarginBottom" editable="true"/>
+                                            <m:Label text="Depth"/>
+                                            <m:Input value="{Depth}" width="20%" class="sapUiSmallMarginBottom" editable="true"/>
+                                            <m:Label text="Height"/>
+                                            <m:Input value="{Height}" width="20%" class="sapUiSmallMarginBottom" editable="true"/>
+                                            <m:Label text="Unit"/>
+                                            <m:Input value="{Unit}" width="15%" class="sapUiSmallMarginBottom" editable="true"/>
+                                        </form:content>
+                            </form:SimpleForm>
+                            	</m:VBox>
 						</blocks>
 					</ObjectPageSubSection>
 				</subSections>
 			</ObjectPageSection>
 		</sections>
                 		<footer>
-                            <m:OverflowToolbar >
-                                <m:ToolbarSpacer />
-                                <!-- <m:OverflowToolbarButton tooltip="Add" text="Add" icon="sap-icon://add"/> -->
+                            <m:OverflowToolbar>
+                                <m:ToolbarSpacer/>
                                 <m:Button text="Save" type="Emphasized"/>
                                 <m:Button text="Cancel" type="Default"/>
-                                <m:Button class="Edit" icon="sap-icon://edit"  text="Edit" />
-                                <m:Button class="Delete" icon="sap-icon://delete"  text="Delete" type="Reject"/>                                
+                                <m:Button class="Edit" icon="sap-icon://edit" text="Edit"/>
+                                <m:Button class="Delete" icon="sap-icon://delete" text="Delete" type="Reject"/>                                
                             </m:OverflowToolbar>
 		                </footer>
                         
 	</ObjectPageLayout>
-
 </mvc:View>
