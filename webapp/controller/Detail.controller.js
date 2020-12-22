@@ -2,7 +2,7 @@ sap.ui.define([
 	"./BaseController",
 	"sap/ui/model/json/JSONModel",
 	"../model/formatter",
-    "sap/m/library",
+    "sap/m/library"
 ], function (BaseController, JSONModel, formatter, mobileLibrary) {
     "use strict";
     
@@ -226,7 +226,6 @@ sap.ui.define([
                                                                 }, error: function(e) {
                                                                 sap.m.MessageToast.show("Error, product not saved.");}});
 
-            // sap.m.MessageToast.show("Product Saved");
 
             this.getView().byId("save").setVisible(false);
             this.getView().byId("cancel").setVisible(false);
