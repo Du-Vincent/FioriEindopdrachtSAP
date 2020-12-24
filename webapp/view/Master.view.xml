@@ -60,7 +60,7 @@
 				<headerToolbar>
 					<OverflowToolbar>
 						<SearchField
-							id="searchField" 
+							id="searchField"
                             placeholder="Search by name or product id"
 							showRefreshButton="true"
 							tooltip="{i18n>masterSearchTooltip}"
@@ -102,7 +102,7 @@
         		<f:footer>
 			        <OverflowToolbar >
                         <ToolbarSpacer/>
-                            <Button class="New" icon="sap-icon://add"  text="New" type="Transparent" press="handleNewPresss"/>
+                            <Button class="New" icon="sap-icon://add"  text="New" type="Transparent" press=".handleNewPress"/>
 			        </OverflowToolbar>
 		        </f:footer>
 

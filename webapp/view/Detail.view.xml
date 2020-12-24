@@ -17,7 +17,6 @@ controllerName="be.ap.product.controller.Detail">
         isChildPage="true" 
         upperCaseAnchorBar="false" 
         showFooter="true">  
-
 				<headerTitle>
                     <ObjectPageHeader>
                     <m:Title text="Product details" wrapping="true" class="sapUiSmallMarginEnd" titleStyle="H3"/>

@@ -26,33 +26,33 @@ sap.ui.define([
 		onInit : function () {
             // Control state model
             
-            this.search = this.byId('searchField');
+            this.search = this.getView().byId('searchField');
 
 
-			var oList = this.byId("list"),
+			var oList = this.getView().byId("list"),
 				oViewModel = this._createViewModel(),
 				// Put down master list's original value for busy indicator delay,
 				// so it can be restored later on. Busy handling on the master list is
 				// taken care of by the master list itself.
 				iOriginalBusyDelay = oList.getBusyIndicatorDelay();
 
-			// this._oGroupFunctions = {
-			// 	Price : function(oContext) {
-			// 		var iNumber = oContext.getProperty('Price'),
-			// 			key, text;
-			// 		if (iNumber <= 20) {
-			// 			key = "LE20";
-			// 			text = this.getResourceBundle().getText("masterGroup1Header1");
-			// 		} else {
-			// 			key = "GT20";
-			// 			text = this.getResourceBundle().getText("masterGroup1Header2");
-			// 		}
-			// 		return {
-			// 			key: key,
-			// 			text: text
-			// 		};
-			// 	}.bind(this)
-			// };
+			this._oGroupFunctions = {
+				Price : function(oContext) {
+					var iNumber = oContext.getProperty('Price'),
+						key, text;
+					if (iNumber <= 20) {
+						key = "LE20";
+						text = this.getResourceBundle().getText("masterGroup1Header1");
+					} else {
+						key = "GT20";
+						text = this.getResourceBundle().getText("masterGroup1Header2");
+					}
+					return {
+						key: key,
+						text: text
+					};
+				}.bind(this)
+			};
 
 			this._oList = oList;
 			// keeps the filter and search state
@@ -141,8 +141,7 @@ sap.ui.define([
             if (sValue) {
                 aFilters = [new Filter("Name", FilterOperator.Contains, sValue.toUpperCase())];
             }
-
-            this.search.getBinding("suggestionItems").filter(aFilters);
+            this.search.getBinding("suggestionItems").filter(aFilters);;
             this.search.suggest();
         },
 
@@ -197,31 +196,30 @@ sap.ui.define([
 		 * @public
 		 */
 		onConfirmViewSettingsDialog : function (oEvent) {
-            this._applySortGroup(oEvent);
-			// var aFilterItems = oEvent.getParameters().filterItems,
-			// 	aFilters = [],
-			// 	aCaptions = [];
+			var aFilterItems = oEvent.getParameters().filterItems,
+				aFilters = [],
+				aCaptions = [];
 
-			// // update filter state:
-			// // combine the filter array and the filter string
-			// aFilterItems.forEach(function (oItem) {
-			// 	switch (oItem.getKey()) {
-			// 		case "Filter1" :
-			// 			aFilters.push(new Filter("Price", FilterOperator.LE, 100));
-			// 			break;
-			// 		case "Filter2" :
-			// 			aFilters.push(new Filter("Price", FilterOperator.GT, 100));
-			// 			break;
-			// 		default :
-			// 			break;
-			// 	}
-			// 	aCaptions.push(oItem.getText());
-			// });
+			// update filter state:
+			// combine the filter array and the filter string
+			aFilterItems.forEach(function (oItem) {
+				switch (oItem.getKey()) {
+					case "Filter1" :
+						aFilters.push(new Filter("Price", FilterOperator.LE, 100));
+						break;
+					case "Filter2" :
+						aFilters.push(new Filter("Price", FilterOperator.GT, 100));
+						break;
+					default :
+						break;
+				}
+				aCaptions.push(oItem.getText());
+			});
 
-			// this._oListFilterState.aFilter = aFilters;
-			// this._updateFilterBar(aCaptions.join(", "));
-			// this._applyFilterSearch();
-			// this._applySortGroup(oEvent);
+			this._oListFilterState.aFilter = aFilters;
+			this._updateFilterBar(aCaptions.join(", "));
+			this._applyFilterSearch();
+			this._applySortGroup(oEvent);
 		},
 
 		/**
@@ -236,12 +234,12 @@ sap.ui.define([
 				aSorters = [];
 			// apply sorter to binding
 			// (grouping comes before sorting)
-			// if (mParams.groupItem) {
-			// 	sPath = mParams.groupItem.getKey();
-			// 	bDescending = mParams.groupDescending;
-			// 	var vGroup = this._oGroupFunctions[sPath];
-			// 	aSorters.push(new Sorter(sPath, bDescending, vGroup));
-			// }
+			if (mParams.groupItem) {
+				sPath = mParams.groupItem.getKey();
+				bDescending = mParams.groupDescending;
+				var vGroup = this._oGroupFunctions[sPath];
+				aSorters.push(new Sorter(sPath, bDescending, vGroup));
+			}
 			sPath = mParams.sortItem.getKey();
 			bDescending = mParams.sortDescending;
 			aSorters.push(new Sorter(sPath, bDescending));
@@ -299,17 +297,7 @@ sap.ui.define([
         },
 
         handleNewPress : function(oEvent) {
-        //    location.reload(); // eslint-disable-line sap-no-location-reload
-        //    const oModel = this.getView().getModel("masterView");
-        //         oModel.updateBindings();
-        // this.browser.refresh();
-        // this.location.refresh();
-        // location.reload();
-        // this.getView().getModel().refresh();
-        // sap.ui.getCore().byId("masterView").getModel().refresh(true);
-        // sap.ui.getCore().byId("list").getModel().refresh(true);
-        // sap.ui.getCore().byId("listA").getModel().refresh(true);
-        //this.getModel("masterView").setProperty("/Products", oData.results);
+
         },
 
 		/* =========================================================== */
