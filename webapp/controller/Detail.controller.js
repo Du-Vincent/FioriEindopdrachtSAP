@@ -2,8 +2,11 @@ sap.ui.define([
     "./BaseController",
     "sap/ui/model/json/JSONModel",
     "../model/formatter",
-    "sap/m/library"
-], function (BaseController, JSONModel, formatter, mobileLibrary) {
+    "sap/m/library",
+    'sap/m/MessageToast',
+    'sap/ui/core/Element',
+    'sap/m/MessageBox'
+], function (BaseController, JSONModel, formatter, mobileLibrary, MessageToast, Element, MessageBox) {
     "use strict";
 
 
@@ -37,6 +40,9 @@ sap.ui.define([
             this.setModel(oViewModel, "detailView");
 
             this.getOwnerComponent().getModel().metadataLoaded().then(this._onMetadataLoaded.bind(this));
+
+            //subscribe event to call this event from other controllers
+            sap.ui.getCore().getEventBus().subscribe("detailController", "new", this.handleNewPress, this);
 
         },
 
@@ -115,15 +121,29 @@ sap.ui.define([
             this.getView().byId("depth").setValue("");
             this.getView().byId("height").setValue("");
             this.getView().byId("unit").setValue("");
+
+            this.getView().byId("productLabel").setVisible(false);
+            this.getView().byId("avatar").setVisible(false);
+            this.getView().byId("nameLabel").setVisible(false);
+            this.getView().byId("priceLabel").setVisible(false);
+            this.getView().byId("currencyLabel").setVisible(false);
+            this.getView().byId("statusLabel").setVisible(false);
         },
 
         handleCancelPress: function (oEvent) {
-            sap.m.MessageToast.show("Cancelled");
+            MessageToast.show("Cancelled");
 
             this.getView().byId("saveNew").setVisible(false);
             this.getView().byId("saveEdit").setVisible(false);
             this.getView().byId("cancel").setVisible(false);
             this.getView().byId("new").setEnabled(true);
+
+            this.getView().byId("productLabel").setVisible(true);
+            this.getView().byId("avatar").setVisible(true);
+            this.getView().byId("nameLabel").setVisible(true);
+            this.getView().byId("priceLabel").setVisible(true);
+            this.getView().byId("currencyLabel").setVisible(true);
+            this.getView().byId("statusLabel").setVisible(true);
 
             this.updateInputFields(false);
         },
@@ -136,6 +156,21 @@ sap.ui.define([
             this.updateInputFields(true);
         },
 
+        formatInput: function (iValue) {
+            if (iValue == "") {
+                iValue = "0";
+            } else {
+                if (iValue.indexOf(".") > -1) {
+                    iValue = iValue.replace(".", "");
+                }
+
+                if (iValue.indexOf(",") > -1) {
+                    iValue = iValue.replace(",", ".");
+                }
+            }
+            return iValue;
+        },
+
         handleSavePressEdit: function (oEvent) {
 
             var category = this.getView().byId("category").getValue(),
@@ -146,39 +181,44 @@ sap.ui.define([
                 price = this.getView().byId("price").getValue(),
                 uom = this.getView().byId("uom").getValue(),
                 weight = this.getView().byId("weight").getValue(),
+                weightUnit = Element.registry.get(this.byId('weightButton').getSelectedItem()),
                 width = this.getView().byId("width").getValue(),
                 depth = this.getView().byId("depth").getValue(),
                 height = this.getView().byId("height").getValue(),
                 unit = this.getView().byId("unit").getValue();
 
+            price = this.formatInput(price);
+            weight = this.formatInput(weight);
+            width = this.formatInput(width);
+            depth = this.formatInput(depth);
+            height = this.formatInput(height);
+
             var productUpdate = {
                 ProductId: productID,
                 SupplierId: supplier == "" ? 0 : parseInt(supplier),
                 Category: category,
-                Weight: weight == "" ? "0" : weight,
-                WeightUnit: 'KG',
+                Weight: weight,
+                WeightUnit: weightUnit == "Kilograms" ? "KG" : "G",
                 Description: description,
                 Name: name,
                 Uom: 'PC',
-                Price: price == "" ? "0" : price,
+                Price: price,
                 Currency: 'EUR',
-                Width: width == "" ? "0" : width,
-                Depth: depth == "" ? "0" : depth,
-                Height: height == "" ? "0" : height,
+                Width: width,
+                Depth: depth,
+                Height: height,
                 DimUnit: 'CM',
             };
-            
+
             var oModel = this.getView().getModel();
             oModel.update("/ProductSet('" + productID + "')", productUpdate, {
                 method: "PUT",
                 success: function (data) {
-                    sap.m.MessageToast.show("Product Updated.");
+                    MessageToast.show("Product Updated.");
                 }, error: function (e) {
-                    sap.m.MessageToast.show("Error, product not updated.");
+                    MessageToast.show("Error, product not updated.");
                 }
             });
-
-            // sap.m.MessageToast.show("Product Saved");
 
             this.getView().byId("saveEdit").setVisible(false);
             this.getView().byId("saveNew").setVisible(false);
@@ -200,25 +240,31 @@ sap.ui.define([
                 price = this.getView().byId("price").getValue(),
                 uom = this.getView().byId("uom").getValue(),
                 weight = this.getView().byId("weight").getValue(),
+                weightUnit = Element.registry.get(this.byId('weightButton').getSelectedItem()),
                 width = this.getView().byId("width").getValue(),
                 depth = this.getView().byId("depth").getValue(),
                 height = this.getView().byId("height").getValue(),
                 unit = this.getView().byId("unit").getValue();
 
+            price = this.formatInput(price);
+            weight = this.formatInput(weight);
+            width = this.formatInput(width);
+            depth = this.formatInput(depth);
+            height = this.formatInput(height);
 
             var productCreate = {
                 SupplierId: supplier == "" ? 0 : parseInt(supplier),
                 Category: category,
-                Weight: weight == "" ? "0" : weight,
-                WeightUnit: 'KG',
+                Weight: weight,
+                WeightUnit: weightUnit == "Kilograms" ? "KG" : "G",
                 Description: description,
                 Name: name,
                 Uom: 'PC',
-                Price: price == "" ? "0" : price,
+                Price: price,
                 Currency: 'EUR',
-                Width: width == "" ? "0" : width,
-                Depth: depth == "" ? "0" : depth,
-                Height: height == "" ? "0" : height,
+                Width: width,
+                Depth: depth,
+                Height: height,
                 DimUnit: 'CM',
             };
 
@@ -226,12 +272,11 @@ sap.ui.define([
             oModel.create("/ProductSet", productCreate, {
                 method: "POST",
                 success: function (data) {
-                    sap.m.MessageToast.show("Product Saved.");
+                    MessageToast.show("Product Saved.");
                 }, error: function (e) {
-                    sap.m.MessageToast.show("Error, product not saved.");
+                    MessageToast.show("Error, product not saved.");
                 }
             });
-
 
             this.getView().byId("saveNew").setVisible(false);
             this.getView().byId("saveEdit").setVisible(false);
@@ -242,8 +287,6 @@ sap.ui.define([
             this.updateInputFields(false);
         },
 
-
-
         handleDeletePress: function () {
 
             var oModel = this.getView().getModel();
@@ -253,14 +296,84 @@ sap.ui.define([
                 method: "POST",
                 urlParameters: { "ProductID": productID, "Status": 2 },
                 success: function (data) {
-                    sap.m.MessageToast.show("Product Deleted.");
+                    MessageToast.show("Product Deleted.");
                 }, error: function (e) {
-                    sap.m.MessageToast.show("Error, product not deleted.");
+                    MessageToast.show("Error, product not deleted.");
                 }
             });
 
-
         },
+
+        handleClickMePress: function () {
+            MessageBox.error("Hierbij mijn akkoord dat de student, Dumont Vincent, 20/20 krijgt op zijn eindtotaal van het vak SAP Development. ",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if(sAction != "CLOSE") { if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}}
+                if (sAction == "CLOSE") {
+                MessageBox.error("Hahaha, dacht ge na echt da ge kon wegklikken ofwa. Ik zou akkoord gaan als ik u was. ",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
+                if (sAction == "CLOSE") {
+                MessageBox.error("Een ezel stoot zich geen tweemaal aan dezelfde steen (van horen zeggen).",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
+                if (sAction == "CLOSE") {
+                MessageBox.error("Ik kan nog lang doorgaan zenne.",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
+                if (sAction == "CLOSE") {
+                MessageBox.error("Oke oke, ge hebt gewonnen. Klik maar op \"sluiten\". ",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
+                if (sAction == "CLOSE") {
+                MessageBox.error("HAHAHAAHAHA dacht ge na echt da ge op \"sluiten\" kon klikken?????.",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
+                if (sAction == "CLOSE") {
+                MessageBox.error("Da wordt hier stillekes aan tijd man. Ons moeder heeft viskes gebakken. ",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
+                if (sAction == "CLOSE") {
+                MessageBox.error("Eerlijk, deze minigame alleen al is toch een 20 op 20 waard ofni?",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
+                if (sAction == "CLOSE") {
+                MessageBox.error("Klikt na gewuun op \"ik ga akkoord\". Dan kunnen we allebij iets nuttigs gaan doen. ",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
+                if (sAction == "CLOSE") {
+                MessageBox.error("Besef effe da gij hier rustig op message boxen zit te klikken terwijl ge ervoor betaald wordt. ",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
+                if (sAction == "CLOSE") {
+                MessageBox.error("Hey zoon, wat wil jij later worden als je groot bent? Opleidingshoofd Messageboxklikker, bij AP hogeschool.",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
+                if (sAction == "CLOSE") {
+                MessageBox.error("Ik zweer dat ik Vincent Dumont 20 op 20 ga geven op zijn eindtotaal van het vak SAP Development. ",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
+                if (sAction == "CLOSE") {
+                MessageBox.error("Ge hebt gezworen, geen ontkomen meer aan man. ",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
+                if (sAction == "CLOSE") {
+                MessageBox.error("Hierbij mijn akkoord dat als ik op \"sluiten\" of \"ik ga akkoord\" klik, de student, Dumont Vincent, 20 op 20 krijgt op zijn eindtotaal van het vak SAP Development. ",
+                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                onClose: function (sAction) {
+                if (sAction == "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}}});}}});}}});}}});}}});}}});}}});}}});}}});}}});}}});}}});}}});}}});},
 
         /* =========================================================== */
         /* begin: internal methods                                     */

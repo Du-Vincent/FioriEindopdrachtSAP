@@ -297,7 +297,7 @@ sap.ui.define([
         },
 
         handleNewPress : function(oEvent) {
-
+            sap.ui.getCore().getEventBus().publish("detailController", "new");
         },
 
 		/* =========================================================== */

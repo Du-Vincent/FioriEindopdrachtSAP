@@ -14,7 +14,7 @@
         <f:title>
             <f:DynamicPageTitle>
                 <f:heading>
-                <Toolbar>
+                <Toolbar style="Clear">
                     <Title 
                            id="masterPageTitle"
 				           text="{masterView>/title}"
@@ -22,7 +22,7 @@
                            textAlign="Center"/>
                            </Toolbar>
                 </f:heading>
-            </f:DynamicPageTitle>
+                </f:DynamicPageTitle>
         </f:title>
 
         <f:content>
@@ -102,7 +102,7 @@
         		<f:footer>
 			        <OverflowToolbar >
                         <ToolbarSpacer/>
-                            <Button class="New" icon="sap-icon://add"  text="New" type="Transparent" press=".handleNewPress"/>
+                            <Button class="New" icon="sap-icon://add"  text="New" type="Transparent" press="handleNewPress"/>
 			        </OverflowToolbar>
 		        </f:footer>
 

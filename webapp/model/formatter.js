@@ -1,7 +1,7 @@
 sap.ui.define([], function () {
-	"use strict";
+    "use strict";
 
-	return {
+    return {
 		/**
 		 * Rounds the currency value to 2 digits
 		 *
@@ -9,15 +9,16 @@ sap.ui.define([], function () {
 		 * @param {string} sValue value to be formatted
 		 * @returns {string} formatted currency value with 2 digits
 		 */
-		currencyValue : function (sValue) {
-			if (!sValue) {
-				return "";
-			}
+        currencyValue: function (sValue) {
+            if (!sValue) {
+                return "";
+            }
 
-			return parseFloat(sValue).toFixed(2);
+            return parseFloat(sValue).toFixed(2);
         },
-        currencyFormatter : function (cValue) {
+
+        currencyFormatter: function (cValue) {
             return cValue.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
         }
-	};
+    };
 });
