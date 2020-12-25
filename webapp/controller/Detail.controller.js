@@ -1,3 +1,19 @@
+// global variables to save values when cancel
+var productID;
+var category;
+var supplier;
+var prodName;
+var description;
+var price;
+var currency = 'EUR';
+var uom = 'PC';
+var weight;
+var weightUnit;
+var width;
+var depth;
+var height;
+var unit = 'CM';
+
 sap.ui.define([
     "./BaseController",
     "sap/ui/model/json/JSONModel",
@@ -5,8 +21,10 @@ sap.ui.define([
     "sap/m/library",
     'sap/m/MessageToast',
     'sap/ui/core/Element',
-    'sap/m/MessageBox'
-], function (BaseController, JSONModel, formatter, mobileLibrary, MessageToast, Element, MessageBox) {
+    'sap/m/MessageBox',
+    'sap/ui/core/routing/History'
+    
+], function (BaseController, JSONModel, formatter, mobileLibrary, MessageToast, Element, MessageBox, History) {
     "use strict";
 
 
@@ -102,11 +120,14 @@ sap.ui.define([
             this.getView().byId("weightButton").setEnabled(visible);
         },
 
+
         handleNewPress: function (oEvent) {
             this.getView().byId("new").setEnabled(false);
             this.getView().byId("saveNew").setVisible(true);
             this.getView().byId("saveEdit").setVisible(false);
-            this.getView().byId("cancel").setVisible(true);
+            this.getView().byId("cancelNew").setVisible(true);
+            this.getView().byId("delete").setEnabled(false);
+            this.getView().byId("edit").setEnabled(false);
 
             this.updateInputFields(true);
 
@@ -128,15 +149,39 @@ sap.ui.define([
             this.getView().byId("priceLabel").setVisible(false);
             this.getView().byId("currencyLabel").setVisible(false);
             this.getView().byId("statusLabel").setVisible(false);
+
         },
 
-        handleCancelPress: function (oEvent) {
+        handleCancelPressNew: function (oEvent) {
+            MessageToast.show("Cancelled");
+            sap.ui.getCore().getEventBus().publish("masterController", "enable");
+            this.updateInputFields(false);
+            
+            this.getRouter().navTo("master");
+
+            this.getView().byId("saveNew").setVisible(false);
+            this.getView().byId("saveEdit").setVisible(false);
+            this.getView().byId("cancelNew").setVisible(false);
+            this.getView().byId("new").setEnabled(true);
+            this.getView().byId("edit").setEnabled(true);
+
+            this.getView().byId("productLabel").setVisible(true);
+            this.getView().byId("avatar").setVisible(true);
+            this.getView().byId("nameLabel").setVisible(true);
+            this.getView().byId("priceLabel").setVisible(true);
+            this.getView().byId("currencyLabel").setVisible(true);
+            this.getView().byId("statusLabel").setVisible(true);
+        },
+
+        handleCancelPressEdit: function (oEvent) {
             MessageToast.show("Cancelled");
 
             this.getView().byId("saveNew").setVisible(false);
             this.getView().byId("saveEdit").setVisible(false);
-            this.getView().byId("cancel").setVisible(false);
+            this.getView().byId("cancelEdit").setVisible(false);
             this.getView().byId("new").setEnabled(true);
+            this.getView().byId("edit").setEnabled(true);
+            this.getView().byId("delete").setEnabled(true);
 
             this.getView().byId("productLabel").setVisible(true);
             this.getView().byId("avatar").setVisible(true);
@@ -146,12 +191,52 @@ sap.ui.define([
             this.getView().byId("statusLabel").setVisible(true);
 
             this.updateInputFields(false);
+
+            sap.ui.getCore().getEventBus().publish("masterController", "enable");
+            sap.ui.getCore().getEventBus().publish("masterController", "editUnBlock");
+
+            this.getView().byId("category").setValue(category);
+            this.getView().byId("supplier").setValue(supplier);
+            this.getView().byId("name").setValue(prodName);
+            this.getView().byId("description").setValue(description);
+            this.getView().byId("price").setValue(price);
+            this.getView().byId("uom").setValue(uom);
+            this.getView().byId("weight").setValue(weight);
+            this.getView().byId("width").setValue(width);
+            this.getView().byId("depth").setValue(depth);
+            this.getView().byId("height").setValue(height);
+            this.getView().byId("unit").setValue(unit);
+            this.getView().byId("weightButton").setSelectedKey(weightUnit.getText() == "Kilograms" ? 'kilo' : 'gram');
         },
 
         handleEditPress: function (oEvent) {
             this.getView().byId("saveEdit").setVisible(true);
             this.getView().byId("saveNew").setVisible(false);
-            this.getView().byId("cancel").setVisible(true);
+            this.getView().byId("cancelEdit").setVisible(true);
+            this.getView().byId("delete").setEnabled(false);
+
+            sap.ui.getCore().getEventBus().publish("masterController", "disable");
+            sap.ui.getCore().getEventBus().publish("masterController", "editBlock");
+
+            productID = this.getView().byId("productID").getValue();
+            category = this.getView().byId("category").getValue();
+            supplier = this.getView().byId("supplier").getValue();
+            prodName = this.getView().byId("name").getValue();
+            description = this.getView().byId("description").getValue();
+            price = this.getView().byId("price").getValue();
+            uom = this.getView().byId("uom").getValue();
+            weight = this.getView().byId("weight").getValue();
+            weightUnit = Element.registry.get(this.byId('weightButton').getSelectedItem());
+            width = this.getView().byId("width").getValue();
+            depth = this.getView().byId("depth").getValue();
+            height = this.getView().byId("height").getValue();
+            unit = this.getView().byId("unit").getValue();
+
+            // price = this.formatInput(price);
+            // weight = this.formatInput(weight);
+            // width = this.formatInput(width);
+            // depth = this.formatInput(depth);
+            // height = this.formatInput(height);
 
             this.updateInputFields(true);
         },
@@ -173,25 +258,25 @@ sap.ui.define([
 
         handleSavePressEdit: function (oEvent) {
 
-            var category = this.getView().byId("category").getValue(),
-                productID = this.getView().byId("productID").getValue(),
-                supplier = this.getView().byId("supplier").getValue(),
-                name = this.getView().byId("name").getValue(),
-                description = this.getView().byId("description").getValue(),
-                price = this.getView().byId("price").getValue(),
-                uom = this.getView().byId("uom").getValue(),
-                weight = this.getView().byId("weight").getValue(),
-                weightUnit = Element.registry.get(this.byId('weightButton').getSelectedItem()),
-                width = this.getView().byId("width").getValue(),
-                depth = this.getView().byId("depth").getValue(),
-                height = this.getView().byId("height").getValue(),
+                category = this.getView().byId("category").getValue();
+                productID = this.getView().byId("productID").getValue();
+                supplier = this.getView().byId("supplier").getValue();
+                prodName = this.getView().byId("name").getValue();
+                description = this.getView().byId("description").getValue();
+                price = this.getView().byId("price").getValue();
+                uom = this.getView().byId("uom").getValue();
+                weight = this.getView().byId("weight").getValue();
+                weightUnit = Element.registry.get(this.byId('weightButton').getSelectedItem());
+                width = this.getView().byId("width").getValue();
+                depth = this.getView().byId("depth").getValue();
+                height = this.getView().byId("height").getValue();
                 unit = this.getView().byId("unit").getValue();
 
-            price = this.formatInput(price);
-            weight = this.formatInput(weight);
-            width = this.formatInput(width);
-            depth = this.formatInput(depth);
-            height = this.formatInput(height);
+                price = this.formatInput(price);
+                weight = this.formatInput(weight);
+                width = this.formatInput(width);
+                depth = this.formatInput(depth);
+                height = this.formatInput(height);
 
             var productUpdate = {
                 ProductId: productID,
@@ -200,14 +285,14 @@ sap.ui.define([
                 Weight: weight,
                 WeightUnit: weightUnit == "Kilograms" ? "KG" : "G",
                 Description: description,
-                Name: name,
-                Uom: 'PC',
+                Name: prodName,
+                Uom: uom,
                 Price: price,
-                Currency: 'EUR',
+                Currency: currency,
                 Width: width,
                 Depth: depth,
                 Height: height,
-                DimUnit: 'CM',
+                DimUnit: unit,
             };
 
             var oModel = this.getView().getModel();
@@ -222,35 +307,39 @@ sap.ui.define([
 
             this.getView().byId("saveEdit").setVisible(false);
             this.getView().byId("saveNew").setVisible(false);
-            this.getView().byId("cancel").setVisible(false);
+            this.getView().byId("cancelEdit").setVisible(false);
             this.getView().byId("new").setEnabled(true);
 
             this.updateInputFields(false);
+
+            sap.ui.getCore().getEventBus().publish("masterController", "refresh");
+            sap.ui.getCore().getEventBus().publish("masterController", "enable");
+            sap.ui.getCore().getEventBus().publish("masterController", "editUnBlock");
         },
 
 
 
         handleSavePressNew: function (oEvent) {
 
-            var category = this.getView().byId("category").getValue(),
-                productID = this.getView().byId("productID").getValue(),
-                supplier = this.getView().byId("supplier").getValue(),
-                name = this.getView().byId("name").getValue(),
-                description = this.getView().byId("description").getValue(),
-                price = this.getView().byId("price").getValue(),
-                uom = this.getView().byId("uom").getValue(),
-                weight = this.getView().byId("weight").getValue(),
-                weightUnit = Element.registry.get(this.byId('weightButton').getSelectedItem()),
-                width = this.getView().byId("width").getValue(),
-                depth = this.getView().byId("depth").getValue(),
-                height = this.getView().byId("height").getValue(),
+                category = this.getView().byId("category").getValue();
+                productID = this.getView().byId("productID").getValue();
+                supplier = this.getView().byId("supplier").getValue();
+                prodName = this.getView().byId("name").getValue();
+                description = this.getView().byId("description").getValue();
+                price = this.getView().byId("price").getValue();
+                uom = this.getView().byId("uom").getValue();
+                weight = this.getView().byId("weight").getValue();
+                weightUnit = Element.registry.get(this.byId('weightButton').getSelectedItem());
+                width = this.getView().byId("width").getValue();
+                depth = this.getView().byId("depth").getValue();
+                height = this.getView().byId("height").getValue();
                 unit = this.getView().byId("unit").getValue();
 
-            price = this.formatInput(price);
-            weight = this.formatInput(weight);
-            width = this.formatInput(width);
-            depth = this.formatInput(depth);
-            height = this.formatInput(height);
+                price = this.formatInput(price);
+                weight = this.formatInput(weight);
+                width = this.formatInput(width);
+                depth = this.formatInput(depth);
+                height = this.formatInput(height);
 
             var productCreate = {
                 SupplierId: supplier == "" ? 0 : parseInt(supplier),
@@ -258,14 +347,14 @@ sap.ui.define([
                 Weight: weight,
                 WeightUnit: weightUnit == "Kilograms" ? "KG" : "G",
                 Description: description,
-                Name: name,
-                Uom: 'PC',
+                Name: prodName,
+                Uom: uom,
                 Price: price,
-                Currency: 'EUR',
+                Currency: currency,
                 Width: width,
                 Depth: depth,
                 Height: height,
-                DimUnit: 'CM',
+                DimUnit: unit,
             };
 
             var oModel = this.getView().getModel();
@@ -280,11 +369,23 @@ sap.ui.define([
 
             this.getView().byId("saveNew").setVisible(false);
             this.getView().byId("saveEdit").setVisible(false);
-
-            this.getView().byId("cancel").setVisible(false);
+            this.getView().byId("edit").setEnabled(true);
+            this.getView().byId("cancelNew").setVisible(false);
             this.getView().byId("new").setEnabled(true);
 
+            this.getView().byId("productLabel").setVisible(true);
+            this.getView().byId("avatar").setVisible(true);
+            this.getView().byId("nameLabel").setVisible(true);
+            this.getView().byId("priceLabel").setVisible(true);
+            this.getView().byId("currencyLabel").setVisible(true);
+            this.getView().byId("statusLabel").setVisible(true);
+
             this.updateInputFields(false);
+
+            sap.ui.getCore().getEventBus().publish("masterController", "refresh");
+            sap.ui.getCore().getEventBus().publish("masterController", "enable");
+
+            this.getRouter().navTo("master");
         },
 
         handleDeletePress: function () {
@@ -297,6 +398,8 @@ sap.ui.define([
                 urlParameters: { "ProductID": productID, "Status": 2 },
                 success: function (data) {
                     MessageToast.show("Product Deleted.");
+                    sap.ui.getCore().getEventBus().publish("masterController", "refresh");
+                    sap.ui.getCore().getEventBus().publish("masterController", "enable");
                 }, error: function (e) {
                     MessageToast.show("Error, product not deleted.");
                 }
