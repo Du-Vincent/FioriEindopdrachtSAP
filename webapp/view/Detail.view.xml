@@ -59,15 +59,25 @@ controllerName="be.ap.product.controller.Detail">
                                     <m:Label text="Product ID" visible="true"/>
                                     <m:Input id="productID" value="{ProductId}" width="50%" class="sapUiSmallMarginBottom" visible="false"/>
 									<m:Label text="Product Category"/>
-                                        <!-- <m:Page>
-                                            <m:content>
-                                                <m:ComboBox id="selectCategory" items="{path: '/categories'}">
-                                                <core:Item text="{Name}"/></m:ComboBox>
-                                           </m:content>
-                                        </m:Page> -->
-                                    <m:Input id="category" value="{Category}" width="50%" class="sapUiSmallMarginBottom" enabled="false"/>
+                                    <m:ComboBox id="comboCategory" items="{ path: '/ProductSet'}" selectedKey="{Category}" width="50%" class="sapUiSmallMarginBottom" enabled="false">
+                                        <core:Item text="{Category}" key="{Category}" />
+                                    </m:ComboBox>
 									<m:Label text="Supplier ID"/>
-									 <m:Input id="supplier" value="{SupplierId}" width="50%" class="sapUiSmallMarginBottom" enabled="false"/>
+                                    <m:ComboBox id="comboSupplier" selectedKey="{= ${SupplierId} > 10 ? '0' : ${SupplierId}}" width="50%" class="sapUiSmallMarginBottom" enabled="false">
+                                        <m:items>
+                                            <core:Item key="1" text="Logibech"/>
+                                            <core:Item key="2" text="Samsong"/>
+                                            <core:Item key="3" text="Hewlett-Bakaard"/>
+                                            <core:Item key="4" text="Bell"/>
+                                            <core:Item key="5" text="Appel Inc."/>
+                                            <core:Item key="6" text="Amasun"/>
+                                            <core:Item key="7" text="Tashiba"/>
+                                            <core:Item key="8" text="Zony"/>
+                                            <core:Item key="9" text="Intol"/>
+                                            <core:Item key="10" text="Cisko"/>
+                                            <core:Item key="0" text="Other"/>
+                                        </m:items>
+                                    </m:ComboBox>
 									<m:Label text="Product Name"/>
                                     <m:Input id="name" value="{Name}" width="100%" fieldWidth="200px" class="sapUiSmallMarginBottom" enabled="false"/>
                                     <m:Label text="Product Description"/>
@@ -78,9 +88,13 @@ controllerName="be.ap.product.controller.Detail">
                                                                 formatOptions: {showMeasure: false}}"
                                                         description="{Currency}" fieldWidth="50%" class="sapUiSmallMarginBottom" enabled="false"/>
                                     <m:Label text="Unit Of Measure"/>
-									<m:Input id="uom" value="{Uom}" width="50%" class="sapUiSmallMarginBottom" enabled="false"/>
+                                        <m:ComboBox id="comboUOM" selectedKey="{= ${Uom} === 'PC' ? 'PC' : 'PC'}" width="50%" class="sapUiSmallMarginBottom" enabled="false">
+                                        <m:items>
+                                        <core:Item key="PC" text="Pieces"/>
+                                        </m:items>
+                                    </m:ComboBox>
                                     <m:Label text="Weight"/>
-                                    <m:HBox>
+                                    <m:FlexBox alignItems="Stretch">
                                     <m:Input id="weight" value="{parts: [{path:'Weight'},{path:'Currency'}],
                                                                 type: 'sap.ui.model.type.Currency',
                                                                 formatOptions: {showMeasure: false}}" class="sapUiSmallMarginBottom" enabled="false"/>
@@ -90,7 +104,7 @@ controllerName="be.ap.product.controller.Detail">
                                             <m:SegmentedButtonItem text="Grams" key="gram" width="auto"/>
                                         </m:items>
                                     </m:SegmentedButton>
-                                    </m:HBox>
+                                    </m:FlexBox>
 								</form:content>
 							</form:SimpleForm>
 
@@ -100,17 +114,21 @@ controllerName="be.ap.product.controller.Detail">
                                             <m:Label text="Width"/>
                                             <m:Input id="width" value="{parts: [{path:'Width'},{path:'Currency'}],
                                                                 type: 'sap.ui.model.type.Currency',
-                                                                formatOptions: {showMeasure: false}}" width="20%" class="sapUiSmallMarginBottom" enabled="false"/>
+                                                                formatOptions: {showMeasure: false}}" width="6em" class="sapUiSmallMarginBottom" enabled="false"/>
                                             <m:Label text="Depth"/>
                                             <m:Input id="depth" value="{parts: [{path:'Depth'},{path:'Currency'}],
                                                                 type: 'sap.ui.model.type.Currency',
-                                                                formatOptions: {showMeasure: false}}" width="20%" class="sapUiSmallMarginBottom" enabled="false"/>
+                                                                formatOptions: {showMeasure: false}}" width="6em" class="sapUiSmallMarginBottom" enabled="false"/>
                                             <m:Label text="Height"/>
                                             <m:Input id="height" value="{parts: [{path:'Height'},{path:'Currency'}],
                                                                 type: 'sap.ui.model.type.Currency',
-                                                                formatOptions: {showMeasure: false}}" width="20%" class="sapUiSmallMarginBottom" enabled="false"/>
+                                                                formatOptions: {showMeasure: false}}" width="6em" class="sapUiSmallMarginBottom" enabled="false"/>
                                             <m:Label text="Unit"/>
-                                            <m:Input id="unit" value="{DimUnit}" width="15%" class="sapUiSmallMarginBottom" enabled="false"/>
+                                            <m:ComboBox id="comboUnit" selectedKey="{= ${DimUnit} === 'CM' ? 'CM' : 'CM'}" width="9em" class="sapUiSmallMarginBottom" enabled="false">
+                                                <m:items>
+                                                    <core:Item key="CM" text="Centimetre"/>
+                                                </m:items>
+                                            </m:ComboBox>
                                             <m:Button id="clickMe"  text="DON'T CLICK HERE !" type="Transparent" press="handleClickMePress" visible="true"/>
                                         </form:content>
                             </form:SimpleForm>

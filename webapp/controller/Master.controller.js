@@ -272,12 +272,12 @@ sap.ui.define([
                 }
             }
             else {
-                MessageToast.show("Please finish your edit before opening other products.", {width : "auto"});
+                MessageToast.show("Please finish your edit before opening other products.", { width: "auto" });
             }
         }
 
 
-    ,
+        ,
 
 		/**
 		 * Event handler for the bypassed event, which is fired when no routing pattern matched.

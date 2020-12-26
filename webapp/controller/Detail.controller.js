@@ -6,24 +6,24 @@ var prodName;
 var description;
 var price;
 var currency = 'EUR';
-var uom = 'PC';
+var uom;
 var weight;
 var weightUnit;
 var width;
 var depth;
 var height;
-var unit = 'CM';
+var unit;
 
 sap.ui.define([
     "./BaseController",
     "sap/ui/model/json/JSONModel",
     "../model/formatter",
     "sap/m/library",
-    'sap/m/MessageToast',
-    'sap/ui/core/Element',
-    'sap/m/MessageBox',
-    'sap/ui/core/routing/History'
-    
+    "sap/m/MessageToast",
+    "sap/ui/core/Element",
+    "sap/m/MessageBox",
+    "sap/ui/core/routing/History"
+
 ], function (BaseController, JSONModel, formatter, mobileLibrary, MessageToast, Element, MessageBox, History) {
     "use strict";
 
@@ -48,10 +48,6 @@ sap.ui.define([
                 delay: 0,
                 lineItemListTitle: this.getResourceBundle().getText("detailLineItemTableHeading")
             });
-
-            // var oModel = new sap.ui.model.json.JSONModel("../model/categories.json");
-            // var comboBox = this.getView().byId("selectCategory");
-            // comboBox.setModel(oModel);
 
             this.getRouter().getRoute("object").attachPatternMatched(this._onObjectMatched, this);
 
@@ -106,17 +102,17 @@ sap.ui.define([
         },
 
         updateInputFields: function (visible) {
-            this.getView().byId("category").setEnabled(visible);
-            this.getView().byId("supplier").setEnabled(visible);
+            this.getView().byId("comboCategory").setEnabled(visible);
+            this.getView().byId("comboSupplier").setEnabled(visible);
             this.getView().byId("name").setEnabled(visible);
             this.getView().byId("description").setEnabled(visible);
             this.getView().byId("price").setEnabled(visible);
-            this.getView().byId("uom").setEnabled(visible);
+            this.getView().byId("comboUOM").setEnabled(visible);
             this.getView().byId("weight").setEnabled(visible);
             this.getView().byId("width").setEnabled(visible);
             this.getView().byId("depth").setEnabled(visible);
             this.getView().byId("height").setEnabled(visible);
-            this.getView().byId("unit").setEnabled(visible);
+            this.getView().byId("comboUnit").setEnabled(visible);
             this.getView().byId("weightButton").setEnabled(visible);
         },
 
@@ -131,17 +127,17 @@ sap.ui.define([
 
             this.updateInputFields(true);
 
-            this.getView().byId("category").setValue("");
-            this.getView().byId("supplier").setValue("");
+            this.getView().byId("comboCategory").setValue("");
+            this.getView().byId("comboSupplier").setValue("");
             this.getView().byId("name").setValue("");
             this.getView().byId("description").setValue("");
             this.getView().byId("price").setValue("");
-            this.getView().byId("uom").setValue("");
+            this.getView().byId("comboUOM").setValue("");
             this.getView().byId("weight").setValue("");
             this.getView().byId("width").setValue("");
             this.getView().byId("depth").setValue("");
             this.getView().byId("height").setValue("");
-            this.getView().byId("unit").setValue("");
+            this.getView().byId("comboUnit").setValue("");
 
             this.getView().byId("productLabel").setVisible(false);
             this.getView().byId("avatar").setVisible(false);
@@ -156,7 +152,7 @@ sap.ui.define([
             MessageToast.show("Cancelled");
             sap.ui.getCore().getEventBus().publish("masterController", "enable");
             this.updateInputFields(false);
-            
+
             this.getRouter().navTo("master");
 
             this.getView().byId("saveNew").setVisible(false);
@@ -164,6 +160,7 @@ sap.ui.define([
             this.getView().byId("cancelNew").setVisible(false);
             this.getView().byId("new").setEnabled(true);
             this.getView().byId("edit").setEnabled(true);
+            this.getView().byId("delete").setEnabled(true);
 
             this.getView().byId("productLabel").setVisible(true);
             this.getView().byId("avatar").setVisible(true);
@@ -195,17 +192,18 @@ sap.ui.define([
             sap.ui.getCore().getEventBus().publish("masterController", "enable");
             sap.ui.getCore().getEventBus().publish("masterController", "editUnBlock");
 
-            this.getView().byId("category").setValue(category);
-            this.getView().byId("supplier").setValue(supplier);
+            this.getView().byId("comboCategory").setValue(category);
+            this.getView().byId("comboSupplier").setSelectedKey(supplier == "Logibech" ? 1 : supplier == "Samsong" ? 2 : supplier == "Hewlett-Bakaard" ? 3 : supplier == "Bell" ? 4 : supplier == "Appel Inc." ? 5 :
+                supplier == "Amasun" ? 6 : supplier == "Tashiba" ? 7 : supplier == "Zony" ? 8 : supplier == "Intol" ? 9 : supplier == "Cisko" ? 10 : 0);
             this.getView().byId("name").setValue(prodName);
             this.getView().byId("description").setValue(description);
             this.getView().byId("price").setValue(price);
-            this.getView().byId("uom").setValue(uom);
+            this.getView().byId("comboUOM").setSelectedKey(uom == "Pieces" ? "PC" : "PC");
             this.getView().byId("weight").setValue(weight);
             this.getView().byId("width").setValue(width);
             this.getView().byId("depth").setValue(depth);
             this.getView().byId("height").setValue(height);
-            this.getView().byId("unit").setValue(unit);
+            this.getView().byId("comboUnit").setSelectedKey(unit == "Centimetre" ? "CM" : "CM");
             this.getView().byId("weightButton").setSelectedKey(weightUnit.getText() == "Kilograms" ? 'kilo' : 'gram');
         },
 
@@ -219,24 +217,18 @@ sap.ui.define([
             sap.ui.getCore().getEventBus().publish("masterController", "editBlock");
 
             productID = this.getView().byId("productID").getValue();
-            category = this.getView().byId("category").getValue();
-            supplier = this.getView().byId("supplier").getValue();
+            category = this.getView().byId("comboCategory").getValue();
+            supplier = this.getView().byId("comboSupplier").getValue();
             prodName = this.getView().byId("name").getValue();
             description = this.getView().byId("description").getValue();
             price = this.getView().byId("price").getValue();
-            uom = this.getView().byId("uom").getValue();
+            uom = this.getView().byId("comboUOM").getValue();
             weight = this.getView().byId("weight").getValue();
             weightUnit = Element.registry.get(this.byId('weightButton').getSelectedItem());
             width = this.getView().byId("width").getValue();
             depth = this.getView().byId("depth").getValue();
             height = this.getView().byId("height").getValue();
-            unit = this.getView().byId("unit").getValue();
-
-            // price = this.formatInput(price);
-            // weight = this.formatInput(weight);
-            // width = this.formatInput(width);
-            // depth = this.formatInput(depth);
-            // height = this.formatInput(height);
+            unit = this.getView().byId("comboUnit").getValue();
 
             this.updateInputFields(true);
         },
@@ -257,42 +249,42 @@ sap.ui.define([
         },
 
         handleSavePressEdit: function (oEvent) {
+            category = this.getView().byId("comboCategory").getValue();
+            productID = this.getView().byId("productID").getValue();
+            supplier = this.getView().byId("comboSupplier").getValue();
+            prodName = this.getView().byId("name").getValue();
+            description = this.getView().byId("description").getValue();
+            price = this.getView().byId("price").getValue();
+            uom = this.getView().byId("comboUOM").getValue();
+            weight = this.getView().byId("weight").getValue();
+            weightUnit = Element.registry.get(this.byId('weightButton').getSelectedItem());
+            width = this.getView().byId("width").getValue();
+            depth = this.getView().byId("depth").getValue();
+            height = this.getView().byId("height").getValue();
+            unit = this.getView().byId("comboUnit").getValue();
 
-                category = this.getView().byId("category").getValue();
-                productID = this.getView().byId("productID").getValue();
-                supplier = this.getView().byId("supplier").getValue();
-                prodName = this.getView().byId("name").getValue();
-                description = this.getView().byId("description").getValue();
-                price = this.getView().byId("price").getValue();
-                uom = this.getView().byId("uom").getValue();
-                weight = this.getView().byId("weight").getValue();
-                weightUnit = Element.registry.get(this.byId('weightButton').getSelectedItem());
-                width = this.getView().byId("width").getValue();
-                depth = this.getView().byId("depth").getValue();
-                height = this.getView().byId("height").getValue();
-                unit = this.getView().byId("unit").getValue();
-
-                price = this.formatInput(price);
-                weight = this.formatInput(weight);
-                width = this.formatInput(width);
-                depth = this.formatInput(depth);
-                height = this.formatInput(height);
+            price = this.formatInput(price);
+            weight = this.formatInput(weight);
+            width = this.formatInput(width);
+            depth = this.formatInput(depth);
+            height = this.formatInput(height);
 
             var productUpdate = {
                 ProductId: productID,
-                SupplierId: supplier == "" ? 0 : parseInt(supplier),
+                SupplierId: supplier == "Logibech" ? 1 : supplier == "Samsong" ? 2 : supplier == "Hewlett-Bakaard" ? 3 : supplier == "Bell" ? 4 : supplier == "Appel Inc." ? 5 :
+                    supplier == "Amasun" ? 6 : supplier == "Tashiba" ? 7 : supplier == "Zony" ? 8 : supplier == "Intol" ? 9 : supplier == "Cisko" ? 10 : 0,
                 Category: category,
                 Weight: weight,
-                WeightUnit: weightUnit == "Kilograms" ? "KG" : "G",
+                WeightUnit: weightUnit.getText() == "Kilograms" ? "KG" : "G",
                 Description: description,
                 Name: prodName,
-                Uom: uom,
+                Uom: uom == "Pieces" ? "PC" : "PC",
                 Price: price,
                 Currency: currency,
                 Width: width,
                 Depth: depth,
                 Height: height,
-                DimUnit: unit,
+                DimUnit: unit == "Centimetre" ? "CM" : "CM",
             };
 
             var oModel = this.getView().getModel();
@@ -309,52 +301,57 @@ sap.ui.define([
             this.getView().byId("saveNew").setVisible(false);
             this.getView().byId("cancelEdit").setVisible(false);
             this.getView().byId("new").setEnabled(true);
+            this.getView().byId("delete").setEnabled(true);
 
             this.updateInputFields(false);
 
             sap.ui.getCore().getEventBus().publish("masterController", "refresh");
             sap.ui.getCore().getEventBus().publish("masterController", "enable");
             sap.ui.getCore().getEventBus().publish("masterController", "editUnBlock");
+            this.getView().byId("comboUnit").setSelectedKey(unit == "Centimetre" ? "CM" : "CM");
+            this.getView().byId("comboUOM").setSelectedKey(uom == "Pieces" ? "PC" : "PC");
+            this.getView().byId("comboSupplier").setSelectedKey(supplier == "Logibech" ? 1 : supplier == "Samsong" ? 2 : supplier == "Hewlett-Bakaard" ? 3 : supplier == "Bell" ? 4 : supplier == "Appel Inc." ? 5 :
+                supplier == "Amasun" ? 6 : supplier == "Tashiba" ? 7 : supplier == "Zony" ? 8 : supplier == "Intol" ? 9 : supplier == "Cisko" ? 10 : 0);
         },
 
 
 
         handleSavePressNew: function (oEvent) {
+            category = this.getView().byId("comboCategory").getValue();
+            productID = this.getView().byId("productID").getValue();
+            supplier = this.getView().byId("comboSupplier").getValue();
+            prodName = this.getView().byId("name").getValue();
+            description = this.getView().byId("description").getValue();
+            price = this.getView().byId("price").getValue();
+            uom = this.getView().byId("comboUOM").getValue();
+            weight = this.getView().byId("weight").getValue();
+            weightUnit = Element.registry.get(this.byId('weightButton').getSelectedItem());
+            width = this.getView().byId("width").getValue();
+            depth = this.getView().byId("depth").getValue();
+            height = this.getView().byId("height").getValue();
+            unit = this.getView().byId("comboUnit").getValue();
 
-                category = this.getView().byId("category").getValue();
-                productID = this.getView().byId("productID").getValue();
-                supplier = this.getView().byId("supplier").getValue();
-                prodName = this.getView().byId("name").getValue();
-                description = this.getView().byId("description").getValue();
-                price = this.getView().byId("price").getValue();
-                uom = this.getView().byId("uom").getValue();
-                weight = this.getView().byId("weight").getValue();
-                weightUnit = Element.registry.get(this.byId('weightButton').getSelectedItem());
-                width = this.getView().byId("width").getValue();
-                depth = this.getView().byId("depth").getValue();
-                height = this.getView().byId("height").getValue();
-                unit = this.getView().byId("unit").getValue();
-
-                price = this.formatInput(price);
-                weight = this.formatInput(weight);
-                width = this.formatInput(width);
-                depth = this.formatInput(depth);
-                height = this.formatInput(height);
+            price = this.formatInput(price);
+            weight = this.formatInput(weight);
+            width = this.formatInput(width);
+            depth = this.formatInput(depth);
+            height = this.formatInput(height);
 
             var productCreate = {
-                SupplierId: supplier == "" ? 0 : parseInt(supplier),
+                SupplierId: supplier == "Logibech" ? 1 : supplier == "Samsong" ? 2 : supplier == "Hewlett-Bakaard" ? 3 : supplier == "Bell" ? 4 : supplier == "Appel Inc." ? 5 :
+                    supplier == "Amasun" ? 6 : supplier == "Tashiba" ? 7 : supplier == "Zony" ? 8 : supplier == "Intol" ? 9 : supplier == "Cisko" ? 10 : 0,
                 Category: category,
                 Weight: weight,
-                WeightUnit: weightUnit == "Kilograms" ? "KG" : "G",
+                WeightUnit: weightUnit.getText() == "Kilograms" ? "KG" : "G",
                 Description: description,
                 Name: prodName,
-                Uom: uom,
+                Uom: uom == "Pieces" ? "PC" : "PC",
                 Price: price,
                 Currency: currency,
                 Width: width,
                 Depth: depth,
                 Height: height,
-                DimUnit: unit,
+                DimUnit: unit == "Centimetre" ? "CM" : "CM",
             };
 
             var oModel = this.getView().getModel();
@@ -372,6 +369,7 @@ sap.ui.define([
             this.getView().byId("edit").setEnabled(true);
             this.getView().byId("cancelNew").setVisible(false);
             this.getView().byId("new").setEnabled(true);
+            this.getView().byId("delete").setEnabled(true);
 
             this.getView().byId("productLabel").setVisible(true);
             this.getView().byId("avatar").setVisible(true);
@@ -384,6 +382,10 @@ sap.ui.define([
 
             sap.ui.getCore().getEventBus().publish("masterController", "refresh");
             sap.ui.getCore().getEventBus().publish("masterController", "enable");
+            this.getView().byId("comboUnit").setSelectedKey(unit == "Centimetre" ? "CM" : "CM");
+            this.getView().byId("comboUOM").setSelectedKey(uom == "Pieces" ? "PC" : "PC");
+            this.getView().byId("comboSupplier").setSelectedKey(supplier == "Logibech" ? 1 : supplier == "Samsong" ? 2 : supplier == "Hewlett-Bakaard" ? 3 : supplier == "Bell" ? 4 : supplier == "Appel Inc." ? 5 :
+                supplier == "Amasun" ? 6 : supplier == "Tashiba" ? 7 : supplier == "Zony" ? 8 : supplier == "Intol" ? 9 : supplier == "Cisko" ? 10 : 0);
 
             this.getRouter().navTo("master");
         },
@@ -409,74 +411,130 @@ sap.ui.define([
 
         handleClickMePress: function () {
             MessageBox.error("Hierbij mijn akkoord dat de student, Dumont Vincent, 20/20 krijgt op zijn eindtotaal van het vak SAP Development. ",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if(sAction != "CLOSE") { if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}}
-                if (sAction == "CLOSE") {
-                MessageBox.error("Hahaha, dacht ge na echt da ge kon wegklikken ofwa. Ik zou akkoord gaan als ik u was. ",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
-                if (sAction == "CLOSE") {
-                MessageBox.error("Een ezel stoot zich geen tweemaal aan dezelfde steen (van horen zeggen).",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
-                if (sAction == "CLOSE") {
-                MessageBox.error("Ik kan nog lang doorgaan zenne.",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
-                if (sAction == "CLOSE") {
-                MessageBox.error("Oke oke, ge hebt gewonnen. Klik maar op \"sluiten\". ",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
-                if (sAction == "CLOSE") {
-                MessageBox.error("HAHAHAAHAHA dacht ge na echt da ge op \"sluiten\" kon klikken?????.",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
-                if (sAction == "CLOSE") {
-                MessageBox.error("Da wordt hier stillekes aan tijd man. Ons moeder heeft viskes gebakken. ",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
-                if (sAction == "CLOSE") {
-                MessageBox.error("Eerlijk, deze minigame alleen al is toch een 20 op 20 waard ofni?",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
-                if (sAction == "CLOSE") {
-                MessageBox.error("Klikt na gewuun op \"ik ga akkoord\". Dan kunnen we allebij iets nuttigs gaan doen. ",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
-                if (sAction == "CLOSE") {
-                MessageBox.error("Besef effe da gij hier rustig op message boxen zit te klikken terwijl ge ervoor betaald wordt. ",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
-                if (sAction == "CLOSE") {
-                MessageBox.error("Hey zoon, wat wil jij later worden als je groot bent? Opleidingshoofd Messageboxklikker, bij AP hogeschool.",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
-                if (sAction == "CLOSE") {
-                MessageBox.error("Ik zweer dat ik Vincent Dumont 20 op 20 ga geven op zijn eindtotaal van het vak SAP Development. ",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
-                if (sAction == "CLOSE") {
-                MessageBox.error("Ge hebt gezworen, geen ontkomen meer aan man. ",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if(sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}
-                if (sAction == "CLOSE") {
-                MessageBox.error("Hierbij mijn akkoord dat als ik op \"sluiten\" of \"ik ga akkoord\" klik, de student, Dumont Vincent, 20 op 20 krijgt op zijn eindtotaal van het vak SAP Development. ",
-                { actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
-                onClose: function (sAction) {
-                if (sAction == "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste.");}}});}}});}}});}}});}}});}}});}}});}}});}}});}}});}}});}}});}}});}}});},
+                {
+                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                    onClose: function (sAction) {
+                        if (sAction != "CLOSE") { if (sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); } }
+                        if (sAction == "CLOSE") {
+                            MessageBox.error("Hahaha, dacht ge na echt da ge kon wegklikken ofwa. Ik zou akkoord gaan als ik u was. ",
+                                {
+                                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                                    onClose: function (sAction) {
+                                        if (sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); }
+                                        if (sAction == "CLOSE") {
+                                            MessageBox.error("Een ezel stoot zich geen tweemaal aan dezelfde steen (van horen zeggen).",
+                                                {
+                                                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                                                    onClose: function (sAction) {
+                                                        if (sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); }
+                                                        if (sAction == "CLOSE") {
+                                                            MessageBox.error("Ik kan nog lang doorgaan zenne.",
+                                                                {
+                                                                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                                                                    onClose: function (sAction) {
+                                                                        if (sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); }
+                                                                        if (sAction == "CLOSE") {
+                                                                            MessageBox.error("Oke oke, ge hebt gewonnen. Klik maar op \"sluiten\". ",
+                                                                                {
+                                                                                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                                                                                    onClose: function (sAction) {
+                                                                                        if (sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); }
+                                                                                        if (sAction == "CLOSE") {
+                                                                                            MessageBox.error("HAHAHAAHAHA dacht ge na echt da ge op \"sluiten\" kon klikken?????.",
+                                                                                                {
+                                                                                                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                                                                                                    onClose: function (sAction) {
+                                                                                                        if (sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); }
+                                                                                                        if (sAction == "CLOSE") {
+                                                                                                            MessageBox.error("Da wordt hier stillekes aan tijd man. Ons moeder heeft viskes gebakken. ",
+                                                                                                                {
+                                                                                                                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                                                                                                                    onClose: function (sAction) {
+                                                                                                                        if (sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); }
+                                                                                                                        if (sAction == "CLOSE") {
+                                                                                                                            MessageBox.error("Eerlijk, deze minigame alleen al is toch een 20 op 20 waard ofni?",
+                                                                                                                                {
+                                                                                                                                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                                                                                                                                    onClose: function (sAction) {
+                                                                                                                                        if (sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); }
+                                                                                                                                        if (sAction == "CLOSE") {
+                                                                                                                                            MessageBox.error("Klikt na gewuun op \"ik ga akkoord\". Dan kunnen we allebij iets nuttigs gaan doen. ",
+                                                                                                                                                {
+                                                                                                                                                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                                                                                                                                                    onClose: function (sAction) {
+                                                                                                                                                        if (sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); }
+                                                                                                                                                        if (sAction == "CLOSE") {
+                                                                                                                                                            MessageBox.error("Besef effe da gij hier rustig op message boxen zit te klikken terwijl ge ervoor betaald wordt. ",
+                                                                                                                                                                {
+                                                                                                                                                                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                                                                                                                                                                    onClose: function (sAction) {
+                                                                                                                                                                        if (sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); }
+                                                                                                                                                                        if (sAction == "CLOSE") {
+                                                                                                                                                                            MessageBox.error("Hey zoon, wat wil jij later worden als je groot bent? Opleidingshoofd Messageboxklikker, bij AP hogeschool.",
+                                                                                                                                                                                {
+                                                                                                                                                                                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                                                                                                                                                                                    onClose: function (sAction) {
+                                                                                                                                                                                        if (sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); }
+                                                                                                                                                                                        if (sAction == "CLOSE") {
+                                                                                                                                                                                            MessageBox.error("Ik zweer dat ik Vincent Dumont 20 op 20 ga geven op zijn eindtotaal van het vak SAP Development. ",
+                                                                                                                                                                                                {
+                                                                                                                                                                                                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                                                                                                                                                                                                    onClose: function (sAction) {
+                                                                                                                                                                                                        if (sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); }
+                                                                                                                                                                                                        if (sAction == "CLOSE") {
+                                                                                                                                                                                                            MessageBox.error("Ge hebt gezworen, geen ontkomen meer aan man. ",
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                                                                                                                                                                                                                    onClose: function (sAction) {
+                                                                                                                                                                                                                        if (sAction != "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); }
+                                                                                                                                                                                                                        if (sAction == "CLOSE") {
+                                                                                                                                                                                                                            MessageBox.error("Hierbij mijn akkoord dat als ik op \"sluiten\" of \"ik ga akkoord\" klik, de student, Dumont Vincent, 20 op 20 krijgt op zijn eindtotaal van het vak SAP Development. ",
+                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                    actions: ["Ik ga akkoord", sap.m.MessageBox.Action.CLOSE],
+                                                                                                                                                                                                                                    onClose: function (sAction) {
+                                                                                                                                                                                                                                        if (sAction == "CLOSE") { MessageToast.show("Dat staat genoteerd en ik wens u het allerbeste."); }
+                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                });
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                });
+                                                                                                                                                                                                        }
+                                                                                                                                                                                                    }
+                                                                                                                                                                                                });
+                                                                                                                                                                                        }
+                                                                                                                                                                                    }
+                                                                                                                                                                                });
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+                                                                                                                                                                });
+                                                                                                                                                        }
+                                                                                                                                                    }
+                                                                                                                                                });
+                                                                                                                                        }
+                                                                                                                                    }
+                                                                                                                                });
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                });
+                                                                                                        }
+                                                                                                    }
+                                                                                                });
+                                                                                        }
+                                                                                    }
+                                                                                });
+                                                                        }
+                                                                    }
+                                                                });
+                                                        }
+                                                    }
+                                                });
+                                        }
+                                    }
+                                });
+                        }
+                    }
+                });
+        },
 
         /* =========================================================== */
         /* begin: internal methods                                     */
