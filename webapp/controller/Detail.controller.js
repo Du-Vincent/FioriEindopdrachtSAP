@@ -134,10 +134,12 @@ sap.ui.define([
             this.getView().byId("price").setValue("");
             this.getView().byId("comboUOM").setValue("");
             this.getView().byId("weight").setValue("");
+            this.getView().byId("weightButton").setSelectedKey("kilo");
             this.getView().byId("width").setValue("");
             this.getView().byId("depth").setValue("");
             this.getView().byId("height").setValue("");
             this.getView().byId("comboUnit").setValue("");
+            
 
             this.getView().byId("productLabel").setVisible(false);
             this.getView().byId("avatar").setVisible(false);
@@ -168,6 +170,9 @@ sap.ui.define([
             this.getView().byId("priceLabel").setVisible(true);
             this.getView().byId("currencyLabel").setVisible(true);
             this.getView().byId("statusLabel").setVisible(true);
+
+            sap.ui.getCore().getEventBus().publish("masterController", "editUnBlock");
+            sap.ui.getCore().getEventBus().publish("masterController", "setSelected");
         },
 
         handleCancelPressEdit: function (oEvent) {
@@ -382,6 +387,8 @@ sap.ui.define([
 
             sap.ui.getCore().getEventBus().publish("masterController", "refresh");
             sap.ui.getCore().getEventBus().publish("masterController", "enable");
+            sap.ui.getCore().getEventBus().publish("masterController", "editUnBlock");
+            sap.ui.getCore().getEventBus().publish("masterController", "setSelected");
             this.getView().byId("comboUnit").setSelectedKey(unit == "Centimetre" ? "CM" : "CM");
             this.getView().byId("comboUOM").setSelectedKey(uom == "Pieces" ? "PC" : "PC");
             this.getView().byId("comboSupplier").setSelectedKey(supplier == "Logibech" ? 1 : supplier == "Samsong" ? 2 : supplier == "Hewlett-Bakaard" ? 3 : supplier == "Bell" ? 4 : supplier == "Appel Inc." ? 5 :

@@ -25,6 +25,7 @@
                 </f:DynamicPageTitle>
         </f:title>
 
+
         <f:content>
 			<List
 				id="list"

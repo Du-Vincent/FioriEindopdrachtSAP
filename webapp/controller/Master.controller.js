@@ -1,4 +1,5 @@
 var blocked = false;
+var selected = false;
 sap.ui.define([
     "./BaseController",
     "sap/ui/model/json/JSONModel",
@@ -85,9 +86,11 @@ sap.ui.define([
             sap.ui.getCore().getEventBus().subscribe("masterController", "refresh", this.onRefresh, this);
             sap.ui.getCore().getEventBus().subscribe("masterController", "disable", this.handleDisable, this);
             sap.ui.getCore().getEventBus().subscribe("masterController", "enable", this.handleEnable, this);
-
             sap.ui.getCore().getEventBus().subscribe("masterController", "editBlock", this.editBlock, this);
             sap.ui.getCore().getEventBus().subscribe("masterController", "editUnBlock", this.editUnBlock, this);
+            sap.ui.getCore().getEventBus().subscribe("masterController", "setSelected", this.setSelected, this);
+
+            
         },
 
         _getProductlist: function () {
@@ -260,6 +263,7 @@ sap.ui.define([
 		 * @public
 		 */
         onSelectionChange: function (oEvent) {
+            selected = true;
             var oList = oEvent.getSource(),
                 bSelected = oEvent.getParameter("selected");
 
@@ -314,7 +318,14 @@ sap.ui.define([
         },
 
         handleNewPress: function (oEvent) {
+            if(selected) {
+            this.onBypassed();
             sap.ui.getCore().getEventBus().publish("detailController", "new");
+            this.editBlock();
+            } else {
+                MessageToast.show("Please select a product before creating new ones.");
+            }
+
         },
 
         handleDisable: function (oEvent) {
@@ -331,6 +342,10 @@ sap.ui.define([
 
         editUnBlock: function () {
             blocked = false;
+        },
+
+        setSelected: function () {
+            selected = false;
         },
 
 

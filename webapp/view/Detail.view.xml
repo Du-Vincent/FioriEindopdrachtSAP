@@ -25,14 +25,15 @@ controllerName="be.ap.product.controller.Detail">
                     </ObjectPageHeader>
 				</headerTitle>
 
-				<headerContent>
+				<headerContent >
 					<m:FlexBox wrap="Wrap" fitContainer="true" alignItems="Stretch">
                     <m:HBox>
-                    		<m:VBox justifyContent="Center" class="sapUiSmallMarginEnd">
+                    		<m:VBox justifyContent="Inherit" class="sapUiSmallMarginEnd">
 							    <m:Text text="{ProductId}" id="productLabel"/>
-					            <f:Avatar src="{i18n>url}" id="avatar" displaySize="XL" displayShape="Square" press="onPress" fallbackIcon="sap-icon://product"/>
+					            <f:Avatar src="https://i.imgur.com/M7bOON5.png" id="avatar" displaySize="M" displayShape="Square" press="onPress" fallbackIcon="sap-icon://product"/>
                             </m:VBox>
                             <m:VBox justifyContent="Center" class="sapUiSmallMarginEnd">
+                            <core:Icon src="sap-icon://syringe" color="white" width="450px"/>
                             <m:Title text="{Name}" id="nameLabel" wrapping="true" class="sapUiSmallMarginEnd" titleStyle="H3"/>
                             <m:Title text="{parts: [{path:'Price'},{path:'Currency'}],
                                             type: 'sap.ui.model.type.Currency',
