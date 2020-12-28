@@ -357,6 +357,7 @@ sap.ui.define([
                 Depth: depth,
                 Height: height,
                 DimUnit: unit == "Centimetre" ? "CM" : "CM",
+                TaxCode: "1"
             };
 
             var oModel = this.getView().getModel();
