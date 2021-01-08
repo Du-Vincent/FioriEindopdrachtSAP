@@ -46,7 +46,9 @@ sap.ui.define([
             var oViewModel = new JSONModel({
                 busy: false,
                 delay: 0,
-                lineItemListTitle: this.getResourceBundle().getText("detailLineItemTableHeading")
+                lineItemListTitle: this.getResourceBundle().getText("detailLineItemTableHeading"),
+                editable: false,
+                visible: true
             });
 
             this.getRouter().getRoute("object").attachPatternMatched(this._onObjectMatched, this);
@@ -101,31 +103,19 @@ sap.ui.define([
             }
         },
 
-        updateInputFields: function (visible) {
-            this.getView().byId("comboCategory").setEnabled(visible);
-            this.getView().byId("comboSupplier").setEnabled(visible);
-            this.getView().byId("name").setEnabled(visible);
-            this.getView().byId("description").setEnabled(visible);
-            this.getView().byId("price").setEnabled(visible);
-            this.getView().byId("comboUOM").setEnabled(visible);
-            this.getView().byId("weight").setEnabled(visible);
-            this.getView().byId("width").setEnabled(visible);
-            this.getView().byId("depth").setEnabled(visible);
-            this.getView().byId("height").setEnabled(visible);
-            this.getView().byId("comboUnit").setEnabled(visible);
-            this.getView().byId("weightButton").setEnabled(visible);
-        },
-
-
         handleNewPress: function (oEvent) {
+            this.getModel("detailView").setProperty("/editable", true);
+            this.getModel("detailView").setProperty("/visible", false);
+            
+
             this.getView().byId("new").setEnabled(false);
-            this.getView().byId("saveNew").setVisible(true);
-            this.getView().byId("saveEdit").setVisible(false);
-            this.getView().byId("cancelNew").setVisible(true);
             this.getView().byId("delete").setEnabled(false);
             this.getView().byId("edit").setEnabled(false);
+            this.getView().byId("saveEdit").setVisible(false);
 
-            this.updateInputFields(true);
+            this.getView().byId("saveNew").setVisible(true);
+            this.getView().byId("cancelNew").setVisible(true);
+
 
             this.getView().byId("comboCategory").setValue("");
             this.getView().byId("comboSupplier").setValue("");
@@ -139,21 +129,14 @@ sap.ui.define([
             this.getView().byId("depth").setValue("");
             this.getView().byId("height").setValue("");
             this.getView().byId("comboUnit").setValue("");
-            
-
-            this.getView().byId("productLabel").setVisible(false);
-            this.getView().byId("avatar").setVisible(false);
-            this.getView().byId("nameLabel").setVisible(false);
-            this.getView().byId("priceLabel").setVisible(false);
-            this.getView().byId("currencyLabel").setVisible(false);
-            this.getView().byId("statusLabel").setVisible(false);
-
         },
 
         handleCancelPressNew: function (oEvent) {
+            this.getModel("detailView").setProperty("/editable", false);
+            this.getModel("detailView").setProperty("/visible", true);
+
             MessageToast.show("Cancelled");
             sap.ui.getCore().getEventBus().publish("masterController", "enable");
-            this.updateInputFields(false);
 
             this.getRouter().navTo("master");
 
@@ -164,18 +147,14 @@ sap.ui.define([
             this.getView().byId("edit").setEnabled(true);
             this.getView().byId("delete").setEnabled(true);
 
-            this.getView().byId("productLabel").setVisible(true);
-            this.getView().byId("avatar").setVisible(true);
-            this.getView().byId("nameLabel").setVisible(true);
-            this.getView().byId("priceLabel").setVisible(true);
-            this.getView().byId("currencyLabel").setVisible(true);
-            this.getView().byId("statusLabel").setVisible(true);
-
             sap.ui.getCore().getEventBus().publish("masterController", "editUnBlock");
             sap.ui.getCore().getEventBus().publish("masterController", "setSelected");
         },
 
         handleCancelPressEdit: function (oEvent) {
+            this.getModel("detailView").setProperty("/editable", false);
+            this.getModel("detailView").setProperty("/visible", true);
+
             MessageToast.show("Cancelled");
 
             this.getView().byId("saveNew").setVisible(false);
@@ -184,15 +163,6 @@ sap.ui.define([
             this.getView().byId("new").setEnabled(true);
             this.getView().byId("edit").setEnabled(true);
             this.getView().byId("delete").setEnabled(true);
-
-            this.getView().byId("productLabel").setVisible(true);
-            this.getView().byId("avatar").setVisible(true);
-            this.getView().byId("nameLabel").setVisible(true);
-            this.getView().byId("priceLabel").setVisible(true);
-            this.getView().byId("currencyLabel").setVisible(true);
-            this.getView().byId("statusLabel").setVisible(true);
-
-            this.updateInputFields(false);
 
             sap.ui.getCore().getEventBus().publish("masterController", "enable");
             sap.ui.getCore().getEventBus().publish("masterController", "editUnBlock");
@@ -213,9 +183,12 @@ sap.ui.define([
         },
 
         handleEditPress: function (oEvent) {
+            this.getModel("detailView").setProperty("/editable", true);
+            this.getModel("detailView").setProperty("/visible", true);
+
             this.getView().byId("saveEdit").setVisible(true);
-            this.getView().byId("saveNew").setVisible(false);
             this.getView().byId("cancelEdit").setVisible(true);
+            this.getView().byId("saveNew").setVisible(false);
             this.getView().byId("delete").setEnabled(false);
 
             sap.ui.getCore().getEventBus().publish("masterController", "disable");
@@ -235,7 +208,6 @@ sap.ui.define([
             height = this.getView().byId("height").getValue();
             unit = this.getView().byId("comboUnit").getValue();
 
-            this.updateInputFields(true);
         },
 
         formatInput: function (iValue) {
@@ -254,6 +226,9 @@ sap.ui.define([
         },
 
         handleSavePressEdit: function (oEvent) {
+            this.getModel("detailView").setProperty("/editable", false);
+            this.getModel("detailView").setProperty("/visible", true);
+            
             category = this.getView().byId("comboCategory").getValue();
             productID = this.getView().byId("productID").getValue();
             supplier = this.getView().byId("comboSupplier").getValue();
@@ -308,8 +283,6 @@ sap.ui.define([
             this.getView().byId("new").setEnabled(true);
             this.getView().byId("delete").setEnabled(true);
 
-            this.updateInputFields(false);
-
             sap.ui.getCore().getEventBus().publish("masterController", "refresh");
             sap.ui.getCore().getEventBus().publish("masterController", "enable");
             sap.ui.getCore().getEventBus().publish("masterController", "editUnBlock");
@@ -322,6 +295,9 @@ sap.ui.define([
 
 
         handleSavePressNew: function (oEvent) {
+            this.getModel("detailView").setProperty("/editable", false);
+            this.getModel("detailView").setProperty("/visible", true);
+
             category = this.getView().byId("comboCategory").getValue();
             productID = this.getView().byId("productID").getValue();
             supplier = this.getView().byId("comboSupplier").getValue();
@@ -372,19 +348,10 @@ sap.ui.define([
 
             this.getView().byId("saveNew").setVisible(false);
             this.getView().byId("saveEdit").setVisible(false);
-            this.getView().byId("edit").setEnabled(true);
             this.getView().byId("cancelNew").setVisible(false);
+            this.getView().byId("edit").setEnabled(true);
             this.getView().byId("new").setEnabled(true);
             this.getView().byId("delete").setEnabled(true);
-
-            this.getView().byId("productLabel").setVisible(true);
-            this.getView().byId("avatar").setVisible(true);
-            this.getView().byId("nameLabel").setVisible(true);
-            this.getView().byId("priceLabel").setVisible(true);
-            this.getView().byId("currencyLabel").setVisible(true);
-            this.getView().byId("statusLabel").setVisible(true);
-
-            this.updateInputFields(false);
 
             sap.ui.getCore().getEventBus().publish("masterController", "refresh");
             sap.ui.getCore().getEventBus().publish("masterController", "enable");
@@ -399,13 +366,15 @@ sap.ui.define([
         },
 
         handleDeletePress: function () {
+            this.getModel("detailView").setProperty("/editable", false);
+            this.getModel("detailView").setProperty("/visible", true);
 
             var oModel = this.getView().getModel();
             var productID = this.getView().byId("productID").getValue();
 
             oModel.callFunction("/SET_STATUS_PRODUCT", {
                 method: "POST",
-                urlParameters: { "ProductID": productID, "Status": 2 },
+                urlParameters: { "ProductID": productID, "Status": 4 },
                 success: function (data) {
                     MessageToast.show("Product Deleted.");
                     sap.ui.getCore().getEventBus().publish("masterController", "refresh");
@@ -414,6 +383,7 @@ sap.ui.define([
                     MessageToast.show("Error, product not deleted.");
                 }
             });
+            this.getRouter().navTo("master");
 
         },
 
